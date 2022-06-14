@@ -14,6 +14,9 @@ public class CaracteristicasPersonaje {
         this.nivel = nivel;
         this.armadura = armadura;
     }
+    public CaracteristicasPersonaje(){
+
+    }
 
     public int getVelocidad() {
         return velocidad;
