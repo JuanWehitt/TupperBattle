@@ -12,7 +12,7 @@ public abstract class Personaje {
     private String imagen;
     private CaracteristicasPersonaje caracteristicas;
 
-    public abstract void probocarDanio(Personaje contrincante);
+    public abstract int probocarDanio(Personaje contrincante);
 
     public Personaje(String nombre, String apodo, int edad, int salud) {
         this.nombre = nombre;

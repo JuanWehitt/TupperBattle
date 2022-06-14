@@ -9,7 +9,7 @@ public class Elfo extends Personaje{
     }
 
     @Override
-    public void probocarDanio(Personaje contrincante) {
+    public int probocarDanio(Personaje contrincante) {
         //poder de disparo PD: Destreza * Fuerza * Nivel del personaje que ataca
         //efectividad de disparo ED: Aleatorio entre 1 y 100
         //valor de ataque VA: Poder de Disparo * Efectividad de Disparo
@@ -23,5 +23,6 @@ public class Elfo extends Personaje{
         int VA = PD * ED;
         int Pdef = susCaracteristicas.getArmadura() * susCaracteristicas.getVelocidad();
         double danio = ((((VA*ED)-Pdef)/500)*100 ) * 1.05;
+        return (int)Math.round(danio);
     }
 }
