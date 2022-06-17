@@ -1,6 +1,6 @@
 package utn.frbb.progIII.controller;
 
-public class gameController {
+public class GameController {
 
     public void iniciarJuego(){
 
