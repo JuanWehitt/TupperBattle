@@ -9,6 +9,8 @@ import java.io.IOException;
 
 public class UIWindow extends javax.swing.JFrame{
 
+    private static final int ANCHOBOTON = 200;
+
     public UIWindow(){
 
     }
@@ -20,13 +22,48 @@ public class UIWindow extends javax.swing.JFrame{
         frame.setVisible(true);
         frame.setSize(1200, 700);
         frame.setLocationRelativeTo(null);
+        //frame.setBackground(Color.black);
 
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(0, 0, 0));
-        panel.setSize(new Dimension(1200, 700));
-        panel.setLayout(null);
-        LoadingScreen.cargarLoadingEn(panel);
+        JPanel panelLogo = new JPanel();
+        panelLogo.setBackground(new Color(0, 0, 0));
+        panelLogo.setSize(new Dimension(1200, 700));
+        panelLogo.setLayout(null);
+        //LoadingScreen.cargarLoadingEn(panelLogo);
         //System.out.println(System.getProperty("user.dir"));
-        frame.add(panel);
+        //imagen del logo del juego
+        File file = new File("TupperBattle/images/logoTupperBattle.png");
+        BufferedImage bufferedImage = ImageIO.read(file);
+        ImageIcon imageIcon = new ImageIcon(bufferedImage);
+        JLabel logoLabel = new JLabel(imageIcon);//240 x
+        logoLabel.setBounds(frame.getWidth()/2-350,30,700,200);
+        logoLabel.setBackground(new Color(255, 0, 0));
+        panelLogo.add(logoLabel);
+        //
+        //menu de inicio
+        JPanel panelMenu = new JPanel();
+        panelMenu.setLayout(null);
+
+        panelMenu.setBounds(frame.getWidth()/2-490/2,230,490,300);
+        panelMenu.setBackground(new Color(110, 133, 201));
+
+        JButton buttonNuevoJuego = new JButton("Nuevo Juego");
+        buttonNuevoJuego.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,20,ANCHOBOTON,30);
+        buttonNuevoJuego.setBackground(Color.WHITE);
+        panelMenu.add(buttonNuevoJuego);
+
+        JButton buttonCrearPersonajes = new JButton("Crear Personajes");
+        buttonCrearPersonajes.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,60,ANCHOBOTON,30);
+        buttonCrearPersonajes.setBackground(Color.WHITE);
+        panelMenu.add(buttonCrearPersonajes);
+
+        JButton buttonVerLog = new JButton("Ver Log");
+        buttonVerLog.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,100,ANCHOBOTON,30);
+        buttonVerLog.setBackground(Color.WHITE);
+        panelMenu.add(buttonVerLog);
+        //
+        frame.getContentPane().add( panelMenu);
+        //frame.add(buttonNuevoJuego);
+        frame.add(panelLogo);
+
     }
 }
