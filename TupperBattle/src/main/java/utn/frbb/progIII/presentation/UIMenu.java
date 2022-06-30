@@ -3,25 +3,33 @@ package utn.frbb.progIII.presentation;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class UIWindow extends javax.swing.JFrame{
+public class UIMenu extends javax.swing.JFrame{
 
-    private static final int ANCHOBOTON = 200;
+    public static final int ANCHOBOTON = 200;
+    JFrame frame;
+    UIGeneratingCharacter windowGeneratingCharacter;
+    JPanel panelMenu;
 
-    public UIWindow(){
-
-    }
-
-    public void crearVentana() throws IOException {
-        JFrame frame = new JFrame("TupperBattle");
+    public UIMenu(){
+        frame = new JFrame("TupperBattle");
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setSize(1200, 700);
         frame.setLocationRelativeTo(null);
+        windowGeneratingCharacter = new UIGeneratingCharacter();
+        windowGeneratingCharacter.crearPanel(frame);
+    }
+
+    public JFrame crearVentana() throws IOException {
+
+
         //frame.setBackground(Color.black);
 
         JPanel panelLogo = new JPanel();
@@ -40,7 +48,7 @@ public class UIWindow extends javax.swing.JFrame{
         panelLogo.add(logoLabel);
         //
         //menu de inicio
-        JPanel panelMenu = new JPanel();
+        panelMenu = new JPanel();
         panelMenu.setLayout(null);
 
         panelMenu.setBounds(frame.getWidth()/2-490/2,230,490,300);
@@ -55,6 +63,16 @@ public class UIWindow extends javax.swing.JFrame{
         buttonCrearPersonajes.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,60,ANCHOBOTON,30);
         buttonCrearPersonajes.setBackground(Color.WHITE);
         panelMenu.add(buttonCrearPersonajes);
+        buttonCrearPersonajes.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panelMenu.setVisible(false);
+                windowGeneratingCharacter.setVisible(true);
+                //UIGeneratingCharacter.showPaneGeneratingCharacter(frame);
+            }
+
+        });
 
         JButton buttonVerLog = new JButton("Ver Log");
         buttonVerLog.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,100,ANCHOBOTON,30);
@@ -64,6 +82,10 @@ public class UIWindow extends javax.swing.JFrame{
         frame.getContentPane().add( panelMenu);
         //frame.add(buttonNuevoJuego);
         frame.add(panelLogo);
+        return frame;
+    }
 
+    public void setVisible(boolean val){
+        panelMenu.setVisible(true);
     }
 }

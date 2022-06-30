@@ -2,6 +2,7 @@ package utn.frbb.progIII.presentation;
 
 import utn.frbb.progIII.Logger.Logger;
 
+import javax.swing.*;
 import java.io.IOException;
 
 
@@ -12,9 +13,9 @@ import java.io.IOException;
 public class App 
 {
     public static void main( String[] args ) throws IOException {
-        UIWindow uiWindow = new UIWindow();
+        UIMenu uiMenu = new UIMenu();
         Logger.logearRegistro("Inicio del Juego");
-        uiWindow.crearVentana();
+        JFrame frame = uiMenu.crearVentana();
         //UIVentana miventana = new UIVentana();
     }
 }
