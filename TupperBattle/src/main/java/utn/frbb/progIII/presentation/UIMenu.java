@@ -14,7 +14,7 @@ public class UIMenu extends javax.swing.JFrame{
     public static final int ANCHOBOTON = 200;
     JFrame frame;
     UIGeneratingCharacter windowGeneratingCharacter;
-    JPanel panelMenu;
+    public static JPanel panelMenu;
 
     public UIMenu(){
         frame = new JFrame("TupperBattle");
@@ -85,7 +85,7 @@ public class UIMenu extends javax.swing.JFrame{
         return frame;
     }
 
-    public void setVisible(boolean val){
+    public static void visible(boolean val){
         panelMenu.setVisible(true);
     }
 }
