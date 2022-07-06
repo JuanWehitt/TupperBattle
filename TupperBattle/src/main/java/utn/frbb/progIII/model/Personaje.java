@@ -14,6 +14,10 @@ public abstract class Personaje {
 
     public abstract int probocarDanio(Personaje contrincante);
 
+    public Personaje(){
+
+    }
+
     public Personaje(String nombre, String apodo, int edad, int salud) {
         this.nombre = nombre;
         this.apodo = apodo;

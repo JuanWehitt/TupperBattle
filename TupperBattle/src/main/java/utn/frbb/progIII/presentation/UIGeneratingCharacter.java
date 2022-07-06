@@ -1,6 +1,9 @@
 package utn.frbb.progIII.presentation;
 
 import utn.frbb.progIII.controller.GameController;
+import utn.frbb.progIII.model.Elfo;
+import utn.frbb.progIII.model.Humano;
+import utn.frbb.progIII.model.Orco;
 import utn.frbb.progIII.model.Personaje;
 
 import javax.swing.*;
@@ -14,7 +17,7 @@ public class UIGeneratingCharacter extends JPanel {
 
     private JTextField textFieldNombre;
     private JTextField textFieldApodo;
-    private JTextField textFieldFecha;
+    private JTextField textFieldEdad;
     private JComboBox boxRaza;
     private JSlider sliderVelocidad;
     private JSlider sliderFuerza;
@@ -22,6 +25,9 @@ public class UIGeneratingCharacter extends JPanel {
     private JSlider sliderDestreza;
 
     private int nroPersonaje = 1;
+    private static final int HUMANO = 0;
+    private static final int ORCO = 1;
+    private static final int ELFO = 2;
 
     private JPanel panelGeneratingCharacter;
     public void setVisible(boolean val){
@@ -82,15 +88,14 @@ public class UIGeneratingCharacter extends JPanel {
         });
         panelGeneratingCharacter.add(boxRaza);
 
-        JLabel labelFecha = new JLabel("NACIMIENTO:");
-        labelFecha.setFont(new Font("Arial", Font.BOLD, 12));
-        labelFecha.setBounds(390,85,100,20);
-        panelGeneratingCharacter.add(labelFecha);
+        JLabel labelEdad = new JLabel("EDAD:");
+        labelEdad.setFont(new Font("Arial", Font.BOLD, 12));
+        labelEdad.setBounds(390,85,100,20);
+        panelGeneratingCharacter.add(labelEdad);
 
-        textFieldFecha = new JTextField();
-        textFieldFecha.setBounds(475,85,80,20);
-        textFieldFecha.setText("dd/mm/aaaa");
-        panelGeneratingCharacter.add(textFieldFecha);
+        textFieldEdad = new JTextField();
+        textFieldEdad.setBounds(435,85,80,20);
+        panelGeneratingCharacter.add(textFieldEdad);
 
         //caracteristicas
         JLabel labelCaracteristicas = new JLabel("CARACTERISITCAS");
@@ -170,23 +175,37 @@ public class UIGeneratingCharacter extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (nroPersonaje!=1) {
                     nroPersonaje--;
+                    limpiarComponentes();
                     mostrarPersonaje(GameController.obtenerPersonaje(nroPersonaje));
                 }
             }
         });
         panelGeneratingCharacter.add(botonAnterior);
 
-        JButton botonSiguiente = new JButton("Siguiente");
+        JButton botonSiguiente = new JButton("OK!, Siguiente");
         botonSiguiente.setBounds(panelGeneratingCharacter.getWidth()/2+5,350,ANCHOBOTON,45);
         botonSiguiente.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (nroPersonaje!=6) {
+                    if (boxRaza.getSelectedIndex()==HUMANO){
+                        Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()),100);
+                        humano.setImagen("");
+                        GameController.agregarPersonaje(nroPersonaje,humano);
+                    }else if(boxRaza.getSelectedIndex()==ORCO){
+                        Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()),100);
+                        orco.setImagen("");
+                        GameController.agregarPersonaje(nroPersonaje,orco);
+                    }else{
+                        Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()),100);
+                        elfo.setImagen("");
+                        GameController.agregarPersonaje(nroPersonaje,elfo);
+                    }
+                    //TODO: ver como actualizar sin crear otro personaje en el lugar
                     nroPersonaje++;
-                    //TODO: crear y almacenar el personaje en GameController aca
+                    limpiarComponentes();
                     mostrarPersonaje(GameController.obtenerPersonaje(nroPersonaje));
                 }
-
             }
         });
         panelGeneratingCharacter.add(botonSiguiente);
@@ -208,7 +227,7 @@ public class UIGeneratingCharacter extends JPanel {
     public void limpiarComponentes(){
         textFieldNombre.setText("");
         textFieldApodo.setText("");
-        textFieldFecha.setText("dd/mm/aa");
+        textFieldEdad.setText("");
         boxRaza.setSelectedIndex(0);
         sliderVelocidad.setValue(5);
         sliderFuerza.setValue(5);
@@ -216,15 +235,22 @@ public class UIGeneratingCharacter extends JPanel {
         sliderDestreza.setValue(3);
     }
     public void mostrarPersonaje(Personaje p){
-        textFieldNombre.setText(p.getNombre());
-        textFieldApodo.setText(p.getApodo());
-        textFieldFecha.setText(p.getFechaNac().toString());
-        //boxRaza.setSelectedIndex(p.getClass().toString());
-        sliderVelocidad.setValue(p.getCaracteristicas().getVelocidad());
-        sliderFuerza.setValue(p.getCaracteristicas().getFuerza());
-        sliderArmadura.setValue(p.getCaracteristicas().getArmadura());
-        sliderDestreza.setValue(p.getCaracteristicas().getDestreza());
-        //TODO: VER COMO CARGAR LA IMAGEN...
-        //TODO: VER COMO MOSTRAR LA RAZA..
+        if (p!=null) {
+            textFieldNombre.setText(p.getNombre());
+            textFieldApodo.setText(p.getApodo());
+            textFieldEdad.setText(Integer.toString(p.getEdad()));
+            if (p instanceof Humano) {
+                boxRaza.setSelectedIndex(HUMANO);
+            } else if (p instanceof Orco) {
+                boxRaza.setSelectedIndex(ORCO);
+            } else {
+                boxRaza.setSelectedIndex(ELFO);
+            }
+            sliderVelocidad.setValue(p.getCaracteristicas().getVelocidad());
+            sliderFuerza.setValue(p.getCaracteristicas().getFuerza());
+            sliderArmadura.setValue(p.getCaracteristicas().getArmadura());
+            sliderDestreza.setValue(p.getCaracteristicas().getDestreza());
+            //TODO: VER COMO CARGAR LA IMAGEN...
+        }
     }
 }
