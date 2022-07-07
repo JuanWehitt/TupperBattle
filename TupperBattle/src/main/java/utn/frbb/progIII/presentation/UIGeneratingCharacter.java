@@ -15,6 +15,7 @@ import static utn.frbb.progIII.presentation.UIMenu.ANCHOBOTON;
 
 public class UIGeneratingCharacter extends JPanel {
 
+    private static final int CANTIDADPERSONAJES = 6;
     private JTextField textFieldNombre;
     private JTextField textFieldApodo;
     private JTextField textFieldEdad;
@@ -30,6 +31,10 @@ public class UIGeneratingCharacter extends JPanel {
     private static final int ELFO = 2;
 
     private JPanel panelGeneratingCharacter;
+    private JButton botonSiguiente;
+    private JButton botonAnterior;
+    private JLabel labelNroPersonaje;
+
     public void setVisible(boolean val){
         panelGeneratingCharacter.setVisible(val);
     }
@@ -94,13 +99,13 @@ public class UIGeneratingCharacter extends JPanel {
         panelGeneratingCharacter.add(labelEdad);
 
         textFieldEdad = new JTextField();
-        textFieldEdad.setBounds(435,85,80,20);
+        textFieldEdad.setBounds(440,85,80,20);
         panelGeneratingCharacter.add(textFieldEdad);
 
         //caracteristicas
-        JLabel labelCaracteristicas = new JLabel("CARACTERISITCAS");
+        JLabel labelCaracteristicas = new JLabel("CARACTERISTICAS");
         labelCaracteristicas.setFont(new Font("Arial", Font.BOLD, 14));
-        labelCaracteristicas.setBounds(220,110,150,20);
+        labelCaracteristicas.setBounds(220,115,150,20);
         panelGeneratingCharacter.add(labelCaracteristicas);
 
         JLabel labelVelocidad = new JLabel("VELOCIDAD:");
@@ -167,6 +172,11 @@ public class UIGeneratingCharacter extends JPanel {
         sliderArmadura.setBackground(new Color(110, 133, 201));
         panelGeneratingCharacter.add(sliderArmadura);
 
+        labelNroPersonaje = new JLabel();
+        labelNroPersonaje.setBounds(284,327,50,20);
+        labelNroPersonaje.setFont(new Font("Arial", Font.BOLD, 12));
+        labelNroPersonaje.setText(nroPersonaje + " de " + CANTIDADPERSONAJES);
+        panelGeneratingCharacter.add(labelNroPersonaje);
 
         JButton botonAnterior = new JButton("Anterior");
         botonAnterior.setBounds(panelGeneratingCharacter.getWidth()/2-ANCHOBOTON-5,350,ANCHOBOTON,45);
@@ -174,7 +184,11 @@ public class UIGeneratingCharacter extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (nroPersonaje!=1) {
+                    if(nroPersonaje==CANTIDADPERSONAJES){
+                        botonSiguiente.setText("OK!, Siguiente");
+                    }
                     nroPersonaje--;
+                    labelNroPersonaje.setText(nroPersonaje + " de " + CANTIDADPERSONAJES);
                     limpiarComponentes();
                     mostrarPersonaje(GameController.obtenerPersonaje(nroPersonaje));
                 }
@@ -182,27 +196,35 @@ public class UIGeneratingCharacter extends JPanel {
         });
         panelGeneratingCharacter.add(botonAnterior);
 
-        JButton botonSiguiente = new JButton("OK!, Siguiente");
+        botonSiguiente = new JButton("OK!, Siguiente");
         botonSiguiente.setBounds(panelGeneratingCharacter.getWidth()/2+5,350,ANCHOBOTON,45);
         botonSiguiente.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nroPersonaje!=6) {
-                    if (boxRaza.getSelectedIndex()==HUMANO){
-                        Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()),100);
-                        humano.setImagen("");
-                        GameController.agregarPersonaje(nroPersonaje,humano);
-                    }else if(boxRaza.getSelectedIndex()==ORCO){
-                        Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()),100);
-                        orco.setImagen("");
-                        GameController.agregarPersonaje(nroPersonaje,orco);
-                    }else{
-                        Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()),100);
-                        elfo.setImagen("");
-                        GameController.agregarPersonaje(nroPersonaje,elfo);
+                if (nroPersonaje!=CANTIDADPERSONAJES) {
+                    if (nroPersonaje > GameController.cantDePersonajesCreados()) {
+                        if (boxRaza.getSelectedIndex() == HUMANO) {
+                            Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()), 100);
+                            humano.setImagen("");
+                            GameController.agregarPersonaje(nroPersonaje, humano);
+                        } else if (boxRaza.getSelectedIndex() == ORCO) {
+                            Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()), 100);
+                            orco.setImagen("");
+                            GameController.agregarPersonaje(nroPersonaje, orco);
+                        } else {
+                            Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()), 100);
+                            elfo.setImagen("");
+                            GameController.agregarPersonaje(nroPersonaje, elfo);
+                        }
+
                     }
-                    //TODO: ver como actualizar sin crear otro personaje en el lugar
+                    if(nroPersonaje==CANTIDADPERSONAJES-1){
+                        botonSiguiente.setText("OK! JUGAR!");
+                    }else{
+                        botonSiguiente.setText("OK!, Siguiente");
+                    }
                     nroPersonaje++;
+                    labelNroPersonaje.setText(nroPersonaje + " de " + CANTIDADPERSONAJES);
                     limpiarComponentes();
                     mostrarPersonaje(GameController.obtenerPersonaje(nroPersonaje));
                 }

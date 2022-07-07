@@ -45,4 +45,8 @@ public class GameController {
         System.out.println(listaPersonajes.size());
     }
 
+    public static int cantDePersonajesCreados(){
+        return listaPersonajes.size();
+    }
+
 }
