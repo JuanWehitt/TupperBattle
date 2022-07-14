@@ -4,14 +4,13 @@ public class CaracteristicasPersonaje {
     private int velocidad=0;
     private int destreza=0;
     private int fuerza=0;
-    private int nivel=0;
     private int armadura=0;
+    private int nivel=0;
 
-    public CaracteristicasPersonaje(int velocidad, int destreza, int fuerza, int nivel, int armadura) {
+    public CaracteristicasPersonaje(int velocidad, int destreza, int fuerza, int armadura) {
         this.velocidad = velocidad;
         this.destreza = destreza;
         this.fuerza = fuerza;
-        this.nivel = nivel;
         this.armadura = armadura;
     }
     public CaracteristicasPersonaje(){

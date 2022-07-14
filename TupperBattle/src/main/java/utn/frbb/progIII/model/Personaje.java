@@ -1,12 +1,14 @@
 package utn.frbb.progIII.model;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 public abstract class Personaje {
 
     private String nombre;
     private String apodo;
-    private Date fechaNac;
+    private String fechaNac;
     private int edad;
     private int salud;
     private String imagen;
@@ -18,11 +20,10 @@ public abstract class Personaje {
 
     }
 
-    public Personaje(String nombre, String apodo, int edad, int salud) {
+    public Personaje(String nombre, String apodo, String fechaNac, int salud) {
         this.nombre = nombre;
         this.apodo = apodo;
-        //this.fechaNac = fechaNac;
-        this.edad = edad;
+        this.fechaNac = fechaNac;
         this.salud = salud;
         this.caracteristicas = new CaracteristicasPersonaje();
     }
@@ -43,15 +44,30 @@ public abstract class Personaje {
         this.apodo = apodo;
     }
 
-    public Date getFechaNac() {
+    public String getFechaNac() {
         return fechaNac;
     }
 
-    public void setFechaNac(Date fechaNac) {
+    public void setFechaNac(String fechaNac) {
         this.fechaNac = fechaNac;
     }
 
     public int getEdad() {
+        String[] edadArr = fechaNac.split("/", 3);
+        int dia = Integer.parseInt(edadArr[0]);
+        int mes = Integer.parseInt(edadArr[1]);
+        int anio = Integer.parseInt(edadArr[2]);
+        Date hoy = new Date();
+        LocalDate local = hoy.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        edad = local.getYear()-anio;
+        //System.out.println(local.getMonthValue()+" "+local.getYear());
+        if (mes>local.getMonthValue()){
+            edad--;
+        }else if (mes==local.getMonthValue()){
+            if (dia>local.getDayOfMonth()){
+                edad--;
+            }
+        }
         return edad;
     }
 

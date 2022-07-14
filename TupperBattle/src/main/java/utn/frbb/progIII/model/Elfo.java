@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class Elfo extends Personaje{
 
-    public Elfo(String nombre, String apodo, int edad, int salud) {
-        super(nombre, apodo, edad, salud);
+    public Elfo(String nombre, String apodo, String fechaNac, int salud) {
+        super(nombre, apodo, fechaNac, salud);
     }
 
     @Override

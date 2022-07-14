@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class Humano extends Personaje{
 
-    public Humano(String nombre, String apodo, int edad, int salud) {
-        super(nombre, apodo, edad, salud);
+    public Humano(String nombre, String apodo, String fechaNac, int salud) {
+        super(nombre, apodo, fechaNac, salud);
     }
 
     public Humano() {

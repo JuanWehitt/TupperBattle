@@ -1,9 +1,6 @@
 package utn.frbb.progIII.controller;
 
-import utn.frbb.progIII.model.Elfo;
-import utn.frbb.progIII.model.Humano;
-import utn.frbb.progIII.model.Orco;
-import utn.frbb.progIII.model.Personaje;
+import utn.frbb.progIII.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,20 +26,35 @@ public class GameController {
         }
     }
 
-    public static void agregarPersonaje(int index, Personaje p){
+    public static void agregarPersonaje(int index, Personaje p, CaracteristicasPersonaje caracteristicasPersonaje){
         index--;
-        System.out.println(p.getNombre()+" "+ p.getApodo()+" "+ p.getEdad()+" "+ p.getSalud());
+        //System.out.println(p.getNombre()+" "+ p.getApodo()+" "+ p.getEdad()+" "+ p.getSalud());
         if (p instanceof Humano) {
-            listaPersonajes.add(index, new Humano(p.getNombre(), p.getApodo(), p.getEdad(), p.getSalud()));
-            listaPersonajes.get(index).setImagen(p.getImagen());
+            if (listaPersonajes.size()>index){
+                listaPersonajes.set(index, new Humano(p.getNombre(), p.getApodo(), p.getFechaNac(), p.getSalud()));
+            }else {
+                listaPersonajes.add(index, new Humano(p.getNombre(), p.getApodo(), p.getFechaNac(), p.getSalud()));
+            }
         }else if (p instanceof Orco){
-            listaPersonajes.add(index, new Orco(p.getNombre(), p.getApodo(), p.getEdad(), p.getSalud()));
-            listaPersonajes.get(index).setImagen(p.getImagen());
+            if (listaPersonajes.size()>index){
+                listaPersonajes.set(index, new Orco(p.getNombre(), p.getApodo(), p.getFechaNac(), p.getSalud()));
+            }else {
+                listaPersonajes.add(index, new Orco(p.getNombre(), p.getApodo(), p.getFechaNac(), p.getSalud()));
+            }
         }else{
-            listaPersonajes.add(index, new Elfo(p.getNombre(), p.getApodo(), p.getEdad(), p.getSalud()));
-            listaPersonajes.get(index).setImagen(p.getImagen());
+            if (listaPersonajes.size()>index){
+                listaPersonajes.set(index, new Elfo(p.getNombre(), p.getApodo(), p.getFechaNac(), p.getSalud()));
+            }else {
+                listaPersonajes.add(index, new Elfo(p.getNombre(), p.getApodo(), p.getFechaNac(), p.getSalud()));
+            }
         }
-        System.out.println(listaPersonajes.size());
+        listaPersonajes.get(index).setImagen(p.getImagen());
+        CaracteristicasPersonaje caracteristicasPersonaje1 = listaPersonajes.get(index).getCaracteristicas();
+        caracteristicasPersonaje1.setArmadura(caracteristicasPersonaje.getArmadura());
+        caracteristicasPersonaje1.setDestreza(caracteristicasPersonaje.getDestreza());
+        caracteristicasPersonaje1.setFuerza(caracteristicasPersonaje.getFuerza());
+        caracteristicasPersonaje1.setVelocidad(caracteristicasPersonaje.getVelocidad());
+        //System.out.println(listaPersonajes.size());
     }
 
     public static int cantDePersonajesCreados(){

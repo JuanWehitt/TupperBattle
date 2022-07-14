@@ -1,15 +1,13 @@
 package utn.frbb.progIII.presentation;
 
 import utn.frbb.progIII.controller.GameController;
-import utn.frbb.progIII.model.Elfo;
-import utn.frbb.progIII.model.Humano;
-import utn.frbb.progIII.model.Orco;
-import utn.frbb.progIII.model.Personaje;
+import utn.frbb.progIII.model.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import static utn.frbb.progIII.presentation.UIMenu.ANCHOBOTON;
 
@@ -18,7 +16,7 @@ public class UIGeneratingCharacter extends JPanel {
     private static final int CANTIDADPERSONAJES = 6;
     private JTextField textFieldNombre;
     private JTextField textFieldApodo;
-    private JTextField textFieldEdad;
+    private JTextField textFieldFecha;
     private JComboBox boxRaza;
     private JSlider sliderVelocidad;
     private JSlider sliderFuerza;
@@ -88,19 +86,20 @@ public class UIGeneratingCharacter extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO: cambiar la imagen de la carta
-                System.out.println("Cambio a "+boxRaza.getSelectedItem().toString());
+                //System.out.println("Cambio a "+boxRaza.getSelectedItem().toString());
             }
         });
         panelGeneratingCharacter.add(boxRaza);
 
-        JLabel labelEdad = new JLabel("EDAD:");
-        labelEdad.setFont(new Font("Arial", Font.BOLD, 12));
-        labelEdad.setBounds(390,85,100,20);
-        panelGeneratingCharacter.add(labelEdad);
+        JLabel labelFecha = new JLabel("NACIMIENTO:");
+        labelFecha.setFont(new Font("Arial", Font.BOLD, 12));
+        labelFecha.setBounds(390,85,100,20);
+        panelGeneratingCharacter.add(labelFecha);
 
-        textFieldEdad = new JTextField();
-        textFieldEdad.setBounds(440,85,80,20);
-        panelGeneratingCharacter.add(textFieldEdad);
+        textFieldFecha = new JTextField();
+        textFieldFecha.setBounds(470,85,75,20);
+        textFieldFecha.setText("dd/mm/aaaa");
+        panelGeneratingCharacter.add(textFieldFecha);
 
         //caracteristicas
         JLabel labelCaracteristicas = new JLabel("CARACTERISTICAS");
@@ -172,6 +171,8 @@ public class UIGeneratingCharacter extends JPanel {
         sliderArmadura.setBackground(new Color(110, 133, 201));
         panelGeneratingCharacter.add(sliderArmadura);
 
+        //TODO: Barra progessbar vertical indicando restante de puntos para utilizar en las caracteristicas.
+
         labelNroPersonaje = new JLabel();
         labelNroPersonaje.setBounds(284,327,50,20);
         labelNroPersonaje.setFont(new Font("Arial", Font.BOLD, 12));
@@ -202,19 +203,55 @@ public class UIGeneratingCharacter extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (nroPersonaje!=CANTIDADPERSONAJES) {
+                    CaracteristicasPersonaje caracteristicasPersonaje = new CaracteristicasPersonaje(
+                            sliderVelocidad.getValue(),
+                            sliderDestreza.getValue(),
+                            sliderFuerza.getValue(),
+                            sliderArmadura.getValue());
                     if (nroPersonaje > GameController.cantDePersonajesCreados()) {
                         if (boxRaza.getSelectedIndex() == HUMANO) {
-                            Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()), 100);
+                            Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
                             humano.setImagen("");
-                            GameController.agregarPersonaje(nroPersonaje, humano);
+                            GameController.agregarPersonaje(nroPersonaje, humano, caracteristicasPersonaje);
                         } else if (boxRaza.getSelectedIndex() == ORCO) {
-                            Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()), 100);
+                            Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
                             orco.setImagen("");
-                            GameController.agregarPersonaje(nroPersonaje, orco);
+                            GameController.agregarPersonaje(nroPersonaje, orco, caracteristicasPersonaje);
                         } else {
-                            Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), Integer.decode(textFieldEdad.getText()), 100);
+                            Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
                             elfo.setImagen("");
-                            GameController.agregarPersonaje(nroPersonaje, elfo);
+                            GameController.agregarPersonaje(nroPersonaje, elfo, caracteristicasPersonaje);
+                        }
+
+                    }else { //actualizacion de los datos
+                        Personaje p = GameController.obtenerPersonaje(nroPersonaje);
+                        if (    (boxRaza.getSelectedIndex()==HUMANO && p instanceof Humano) ||
+                                (boxRaza.getSelectedIndex()==ORCO && p instanceof Orco) ||
+                                (boxRaza.getSelectedIndex()==ELFO && p instanceof Elfo)
+                            ){
+                            p.setNombre(textFieldNombre.getText());
+                            p.setApodo(textFieldApodo.getText());
+                            p.setFechaNac(textFieldFecha.getText());
+                            //p.setImagen();
+                            CaracteristicasPersonaje car = p.getCaracteristicas();
+                            car.setVelocidad(sliderVelocidad.getValue());
+                            car.setFuerza(sliderFuerza.getValue());
+                            car.setDestreza(sliderDestreza.getValue());
+                            car.setArmadura(sliderArmadura.getValue());
+                        } else{ //cambio de raza
+                            if (boxRaza.getSelectedIndex() == HUMANO) {
+                                Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
+                                humano.setImagen("");
+                                GameController.agregarPersonaje(nroPersonaje, humano, caracteristicasPersonaje);
+                            } else if (boxRaza.getSelectedIndex() == ORCO) {
+                                Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
+                                orco.setImagen("");
+                                GameController.agregarPersonaje(nroPersonaje, orco, caracteristicasPersonaje);
+                            } else {
+                                Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
+                                elfo.setImagen("");
+                                GameController.agregarPersonaje(nroPersonaje, elfo, caracteristicasPersonaje);
+                            }
                         }
 
                     }
@@ -249,7 +286,7 @@ public class UIGeneratingCharacter extends JPanel {
     public void limpiarComponentes(){
         textFieldNombre.setText("");
         textFieldApodo.setText("");
-        textFieldEdad.setText("");
+        textFieldFecha.setText("dd/mm/aaaa");
         boxRaza.setSelectedIndex(0);
         sliderVelocidad.setValue(5);
         sliderFuerza.setValue(5);
@@ -260,7 +297,7 @@ public class UIGeneratingCharacter extends JPanel {
         if (p!=null) {
             textFieldNombre.setText(p.getNombre());
             textFieldApodo.setText(p.getApodo());
-            textFieldEdad.setText(Integer.toString(p.getEdad()));
+            textFieldFecha.setText(p.getFechaNac());
             if (p instanceof Humano) {
                 boxRaza.setSelectedIndex(HUMANO);
             } else if (p instanceof Orco) {
