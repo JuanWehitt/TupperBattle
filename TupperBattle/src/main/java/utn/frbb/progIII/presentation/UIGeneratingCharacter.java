@@ -264,6 +264,11 @@ public class UIGeneratingCharacter extends JPanel {
                     labelNroPersonaje.setText(nroPersonaje + " de " + CANTIDADPERSONAJES);
                     limpiarComponentes();
                     mostrarPersonaje(GameController.obtenerPersonaje(nroPersonaje));
+                } else{
+                    //abanza a JUGAR!
+                    panelGeneratingCharacter.setVisible(false);
+                    UIMenu.windowPartida.cargarDatosJuego();
+                    UIMenu.windowPartida.setVisible(true);
                 }
             }
         });

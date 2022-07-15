@@ -7,7 +7,7 @@ import java.util.List;
 
 public class GameController {
 
-    private static List<Personaje> listaPersonajes = new ArrayList<>(6);;
+    private static List<Personaje> listaPersonajes = new ArrayList<>(6);
 
     public void iniciarJuego(){
 

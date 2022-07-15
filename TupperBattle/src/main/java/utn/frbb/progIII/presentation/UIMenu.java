@@ -14,6 +14,7 @@ public class UIMenu extends javax.swing.JFrame{
     public static final int ANCHOBOTON = 200;
     JFrame frame;
     UIGeneratingCharacter windowGeneratingCharacter;
+    public static UIPartida windowPartida;
     public static JPanel panelMenu;
 
     public UIMenu(){
@@ -25,6 +26,8 @@ public class UIMenu extends javax.swing.JFrame{
         frame.setLocationRelativeTo(null);
         windowGeneratingCharacter = new UIGeneratingCharacter();
         windowGeneratingCharacter.crearPanel(frame);
+        windowPartida = new UIPartida();
+        windowPartida.crearPanel(frame);
     }
 
     public JFrame crearVentana() throws IOException {
@@ -79,7 +82,7 @@ public class UIMenu extends javax.swing.JFrame{
         buttonVerLog.setBackground(Color.WHITE);
         panelMenu.add(buttonVerLog);
         //
-        frame.getContentPane().add( panelMenu);
+        frame.getContentPane().add(panelMenu);
         //frame.add(buttonNuevoJuego);
         frame.add(panelLogo);
         return frame;

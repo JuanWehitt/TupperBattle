@@ -16,6 +16,7 @@ public class App
         UIMenu uiMenu = new UIMenu();
         Logger.logearRegistro("Inicio del Juego");
         JFrame frame = uiMenu.crearVentana();
+        UIPartida partida = new UIPartida();
         //UIVentana miventana = new UIVentana();
     }
 }
