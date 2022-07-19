@@ -265,8 +265,31 @@ public class UIGeneratingCharacter extends JPanel {
                     limpiarComponentes();
                     mostrarPersonaje(GameController.obtenerPersonaje(nroPersonaje));
                 } else{
-                    //abanza a JUGAR!
+                    //guarda y abanza a JUGAR!
+
+                    CaracteristicasPersonaje caracteristicasPersonaje = new CaracteristicasPersonaje(
+                            sliderVelocidad.getValue(),
+                            sliderDestreza.getValue(),
+                            sliderFuerza.getValue(),
+                            sliderArmadura.getValue());
+
+                    if (boxRaza.getSelectedIndex() == HUMANO) {
+                        Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
+                        humano.setImagen("");
+                        GameController.agregarPersonaje(nroPersonaje, humano, caracteristicasPersonaje);
+                    } else if (boxRaza.getSelectedIndex() == ORCO) {
+                        Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
+                        orco.setImagen("");
+                        GameController.agregarPersonaje(nroPersonaje, orco, caracteristicasPersonaje);
+                    } else {
+                        Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
+                        elfo.setImagen("");
+                        GameController.agregarPersonaje(nroPersonaje, elfo, caracteristicasPersonaje);
+                    }
+
                     panelGeneratingCharacter.setVisible(false);
+                    UIMenu.windowPartida.registroJugadores();
+                    GameController.iniciarJuego();
                     UIMenu.windowPartida.cargarDatosJuego();
                     UIMenu.windowPartida.setVisible(true);
                 }

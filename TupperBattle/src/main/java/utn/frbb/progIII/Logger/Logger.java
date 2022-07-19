@@ -9,7 +9,7 @@ public class Logger {
 
     private static final String PATHLOGGER = "TupperBattle/Logger/log.log";
     public static void logearRegistro(String reg) throws IOException {
-        //TODO ponerle la fecha antes del texto
+
         System.out.println(reg);
         try {
             FileWriter fw = new FileWriter(PATHLOGGER, true);

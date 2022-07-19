@@ -13,7 +13,7 @@ public class UIMenu extends javax.swing.JFrame{
 
     public static final int ANCHOBOTON = 200;
     JFrame frame;
-    UIGeneratingCharacter windowGeneratingCharacter;
+    public static UIGeneratingCharacter windowGeneratingCharacter;
     public static UIPartida windowPartida;
     public static JPanel panelMenu;
 

@@ -14,6 +14,10 @@ public abstract class Personaje {
     private String imagen;
     private CaracteristicasPersonaje caracteristicas;
 
+
+
+    private int ataqueNro = 1;
+
     public abstract int probocarDanio(Personaje contrincante);
 
     public Personaje(){
@@ -26,6 +30,15 @@ public abstract class Personaje {
         this.fechaNac = fechaNac;
         this.salud = salud;
         this.caracteristicas = new CaracteristicasPersonaje();
+
+    }
+
+    public int getAtaqueNro() {
+        return ataqueNro;
+    }
+
+    public void setAtaqueNro(int ataque){
+        ataqueNro = ataque;
     }
 
     public String getNombre() {

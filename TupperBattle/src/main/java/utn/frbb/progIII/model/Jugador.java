@@ -1,13 +1,19 @@
 package utn.frbb.progIII.model;
 
+import utn.frbb.progIII.controller.GameController;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Jugador {
     private String id;
     private String nombre;
     private String alias;
-    private Personaje personaje1,personaje2,personaje3;
+    private List<Personaje> listaPersonajes;
     private Personaje personajeEnRonda;
 
     public Jugador() {
+        listaPersonajes = new ArrayList<>(GameController.personajesPorJugador());
     }
 
     public String getNombre() {
@@ -26,28 +32,17 @@ public class Jugador {
         this.alias = alias;
     }
 
-    public Personaje getPersonaje1() {
-        return personaje1;
+    public Personaje getPersonaje(int ind) {
+        return listaPersonajes.get(ind);
     }
 
-    public void setPersonaje1(Personaje personaje1) {
-        this.personaje1 = personaje1;
-    }
-
-    public Personaje getPersonaje2() {
-        return personaje2;
-    }
-
-    public void setPersonaje2(Personaje personaje2) {
-        this.personaje2 = personaje2;
-    }
-
-    public Personaje getPersonaje3() {
-        return personaje3;
-    }
-
-    public void setPersonaje3(Personaje personaje3) {
-        this.personaje3 = personaje3;
+    public boolean agregarPersonaje(Personaje personaje) {
+        if (listaPersonajes.size()<GameController.personajesPorJugador()) {
+            listaPersonajes.add(personaje);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public Personaje getPersonajeEnRonda() {
@@ -57,4 +52,6 @@ public class Jugador {
     public void setPersonajeEnRonda(Personaje personajeEnRonda) {
         this.personajeEnRonda = personajeEnRonda;
     }
+
+
 }

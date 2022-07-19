@@ -5,21 +5,61 @@ import java.util.Date;
 
 public class Partida {
 
-    private Date fecha;
+    private String id;
     private Jugador jugador1,jugador2,jugadorGanador;
+    private Jugador ganadorDeRonda;
+    private Jugador perdedorDeRonda;
+    private Jugador jugadorDeTurno;
+    private Jugador jugadorEnEspera;
 
     public Partida(Jugador jugador1, Jugador jugador2) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
-        //fecha = new LocalDate();
     }
 
-    public Date getFecha() {
-        return fecha;
+    public Jugador getGanadorDeRonda() {
+        return ganadorDeRonda;
     }
 
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
+    public  void setGanadorDeRonda(Jugador ganadorDeRonda) {
+        this.ganadorDeRonda = ganadorDeRonda;
+    }
+
+    public  Jugador getPerdedorDeRonda() {
+        return perdedorDeRonda;
+    }
+
+    public  void setPerdedorDeRonda(Jugador perdedorDeRonda) {
+        this.perdedorDeRonda = perdedorDeRonda;
+    }
+
+    public  Jugador getJugadorDeTurno() {
+        return jugadorDeTurno;
+    }
+
+    public  void setJugadorDeTurno(Jugador jugadorDeTurno) {
+        this.jugadorDeTurno = jugadorDeTurno;
+        if (jugadorDeTurno==jugador1){
+            jugadorEnEspera = jugador2;
+        }else{
+            jugadorEnEspera = jugador1;
+        }
+    }
+
+    public Jugador getJugadorEnEspera() {
+        return jugadorEnEspera;
+    }
+
+    public void setJugadorEnEspera(Jugador jugadorEnEspera) {
+        this.jugadorEnEspera = jugadorEnEspera;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Jugador getJugador1() {

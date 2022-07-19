@@ -1,6 +1,8 @@
 package utn.frbb.progIII.presentation;
 
+import utn.frbb.progIII.controller.GameController;
 import utn.frbb.progIII.model.Jugador;
+import utn.frbb.progIII.model.Personaje;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,8 +10,7 @@ import java.awt.geom.AffineTransform;
 
 public class UIPartida extends JPanel{
 
-    private final int CANTIDADDERONDAS = 7;
-    private int ronda = 1;
+
     private Jugador jugador1;
     private Jugador jugador2;
 
@@ -104,26 +105,39 @@ public class UIPartida extends JPanel{
 
         frame.add(panelPartida);
 
-        /*String nombre = JOptionPane.showInputDialog(null, "Ingresa tu nombre!",
-                "Jugadores", JOptionPane.QUESTION_MESSAGE);
-        jugador1 = new Jugador();
-        jugador1.setNombre(nombre);
-
-        nombre = JOptionPane.showInputDialog(null, "Ingresa el nombre de tu oponente!",
-                "Jugadores", JOptionPane.QUESTION_MESSAGE);
-        jugador2 = new Jugador();
-        jugador2.setNombre(nombre);
-
-        JOptionPane.showMessageDialog(null, "Se repartiran las cartas",
-                "Repartija", JOptionPane.OK_OPTION);
- */
-
-
-
 
     }
 
+    public void registroJugadores(){
+        String nombre1 = JOptionPane.showInputDialog(null, "Ingresa tu nombre!",
+                "Jugadores", JOptionPane.QUESTION_MESSAGE);
+        if( nombre1==null ){
+            UIMenu.windowGeneratingCharacter.setVisible(true);
+        }else {
+            String nombre2 = JOptionPane.showInputDialog(null, "Ingresa el nombre de tu oponente!",
+                    "Jugadores", JOptionPane.QUESTION_MESSAGE);
+            if ( nombre2 == null){
+                UIMenu.windowGeneratingCharacter.setVisible(true);
+            } else {
+                GameController.crearLaPartida(nombre1,nombre2);
+                JOptionPane.showMessageDialog(null, "Se repartiran las cartas",
+                        "Repartija", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+
     public void cargarDatosJuego(){
+        //trae del game controler los datos como nombres de jugadores, inicia las vidas..
+        Jugador j1 = GameController.getJugador(1,GameController.getNroPartida());
+
+        labelJugador1.setText(j1.getNombre() + " con el "+j1.getPersonajeEnRonda().getApodo());
+        barraJugador1.setValue(j1.getPersonajeEnRonda().getSalud());
+        labelVidaJugador1.setText(Integer.toString(j1.getPersonajeEnRonda().getSalud()));
+
+        Jugador j2 = GameController.getJugador(2,GameController.getNroPartida());
+        labelJugador2.setText(j2.getNombre() + " con el "+j2.getPersonajeEnRonda().getApodo());
+        barraJugador2.setValue(j2.getPersonajeEnRonda().getSalud());
+        labelVidaJugador2.setText(Integer.toString(j2.getPersonajeEnRonda().getSalud()));
 
     }
 
