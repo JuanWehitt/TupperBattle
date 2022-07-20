@@ -8,8 +8,8 @@ import java.util.List;
 public class GameController {
 
     private static int ronda = 1;
-    private static final int CANTIDADDEPERSONAJESPORJUGADOR = 3;
-    private static final int CANTIDADDEATAQUESPORJUGADOR = 7;
+    public static final int CANTIDADDEPERSONAJESPORJUGADOR = 3;
+    public static final int CANTIDADDEATAQUESPORJUGADOR = 7;
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
 
