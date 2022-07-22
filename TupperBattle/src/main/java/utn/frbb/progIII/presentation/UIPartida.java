@@ -1,10 +1,10 @@
 package utn.frbb.progIII.presentation;
 
-import jdk.internal.jimage.ImageStrings;
+
 import utn.frbb.progIII.controller.GameController;
-import utn.frbb.progIII.model.Humano;
 import utn.frbb.progIII.model.Jugador;
 import utn.frbb.progIII.model.Personaje;
+
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -12,7 +12,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +28,9 @@ public class UIPartida extends JPanel{
     private JLabel labelVidaJugador1;
     private JLabel labelVidaJugador2;
     private List<UICarta> listaDeCartas;
-
-
+    private UICaracteristicas caracteristicasIzq, caracteristicasDer;
+    private JButton botonAtacar;
     private JPanel panelPartida;
-    private List<UICaracteristicas> listaDeCaracteristicas;
 
     public void setVisible(boolean val){
         panelPartida.setVisible(val);
@@ -91,12 +89,12 @@ public class UIPartida extends JPanel{
         labelVidaJugador2.setBounds(560,65,200,20);
         panelPartida.add(labelVidaJugador2);
 
-        JButton botonAtacar = new JButton("Atacarr!!");
-        botonAtacar.setBounds(100, 400, 100,30);
+        botonAtacar = new JButton("Atacarr!! >>>");
+        botonAtacar.setBounds(260, 230, 100,30);
         botonAtacar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //barraJugador2.setValue(30);
+                clickEnAtacar();
             }
         });
         panelPartida.add(botonAtacar);
@@ -107,28 +105,75 @@ public class UIPartida extends JPanel{
 
     }
 
+    private void clickEnAtacar(){
+        GameController.atacarAlOponente();
+        GameController.actualizarNumeroDeAtaques();
+        barraJugador1.setValue(jugador1.getPersonajeEnRonda().getSalud());
+        barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
+        //cartel con thread restando en rojo la vida que le saco.
+        if (GameController.finDeRonda()){
+            //cartel del ganador de la ronda, por pmuerte o por completar los 7 ataques.
+            //cartel de nivel o lo que se gano, 10 de vida
+            //cartel de se sortearan los opnentes.
+            //sortear los oponentes.
+            //resetear nroAtaques
+            GameController.setRonda(GameController.getRonda()+1);
+        }
+        if(GameController.finDeLaPartida()){
+            GameController.setRonda(1);
+        }
+
+        if(GameController.getJugadorDeTurno()==jugador1){
+            //Jugador jaux = jugador1;
+            GameController.setJugadorDeTurno(jugador2);
+            GameController.setJugadorEnEspera(jugador1);
+            botonAtacar.setBounds(420, 230, 120,30);
+            botonAtacar.setText("<<< Atacarr!!");
+        }else{
+            GameController.setJugadorDeTurno(jugador1);
+            GameController.setJugadorEnEspera(jugador2);
+
+            botonAtacar.setBounds(250, 230, 120,30);
+            botonAtacar.setText("Atacarr!! >>>");
+        }
+    }
+
     public void imprimirCartas(JPanel panel){
         listaDeCartas = new ArrayList<UICarta>();
-        UICaracteristicas caracteristicas;
         //TODO: VER Panel con capas (jLayeredPane):  un contenedor que permite a sus componentes especificar su profundidad y superpponerse uno al otro cuando se necesite.
         for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
             if(i<=3) {
                 UICarta carta;
-                listaDeCartas.add(new UICarta());
-                carta = listaDeCartas.get(listaDeCartas.size()-1);
-                carta.setBounds(100+(i*20),125+(i*20),120,170);
-                carta.setLado(0);
-                //TODO: IMPRIMIR LAS CARACTERISTICAS CORRESPONDIENTES A LA uicARTA CARTA
+                listaDeCartas.add(0,new UICarta());
+                carta = listaDeCartas.get(0);
+                carta.setBounds(160-(i*20),185-(i*20),120,170);
+                carta.setLado(GameController.LADODIZQUIERDO);
+                carta.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
                 panel.add(carta);
             }else{
                 UICarta carta;
-                listaDeCartas.add(new UICarta());
-                carta = listaDeCartas.get(listaDeCartas.size()-1);
-                carta.setBounds(580-((i-3)*20),125+((i-3)*20),120,170);
-                carta.setLado(1);
-                //TODO: IMPRIMIR LAS CARACTERISTICAS CORRESPONDIENTES A LA uicARTA CARTA
+                listaDeCartas.add(0,new UICarta());
+                carta = listaDeCartas.get(0);
+                carta.setBounds(520+((i-3)*20),185-((i-3)*20),120,170);
+                carta.setLado(GameController.LADODERECHO);
+                carta.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
                 panel.add(carta);
             }
+            caracteristicasDer = new UICaracteristicas();
+            caracteristicasIzq = new UICaracteristicas();
+            caracteristicasDer.setLayout(null);
+            caracteristicasIzq.setLayout(null);
+            caracteristicasIzq.setBounds(0,0,400,500);
+            caracteristicasDer.setBounds(400,0,400,500);
+            caracteristicasIzq.crearComponentesUICaracteristicas();
+            caracteristicasDer.crearComponentesUICaracteristicas();
+
+            caracteristicasDer.setBackground(new Color(0,0,0,0));
+            caracteristicasIzq.setBackground(new Color(0,0,0,0));
+            //caracteristicasDer.setBorder(new LineBorder(Color.BLUE,3));
+            //caracteristicasIzq.setBorder(new LineBorder(Color.BLUE,3));
+            panel.add(caracteristicasDer);
+            panel.add(caracteristicasIzq);
         }
     }
 
@@ -152,33 +197,41 @@ public class UIPartida extends JPanel{
 
     public void cargarDatosJuego(){
         //trae del game controler los datos como nombres de jugadores, inicia las vidas..
-        Jugador j1 = GameController.getJugador(1,GameController.getNroPartida());
+        jugador1 = GameController.getJugador(1,GameController.getNroPartida());
 
-        labelJugador1.setText(j1.getNombre() + " con el "+j1.getPersonajeEnRonda().getApodo());
-        barraJugador1.setValue(j1.getPersonajeEnRonda().getSalud());
-        labelVidaJugador1.setText(Integer.toString(j1.getPersonajeEnRonda().getSalud()));
+        labelJugador1.setText(jugador1.getNombre() + " con el "+jugador1.getPersonajeEnRonda().getApodo());
+        barraJugador1.setValue(jugador1.getPersonajeEnRonda().getSalud());
+        labelVidaJugador1.setText(Integer.toString(jugador1.getPersonajeEnRonda().getSalud()));
 
-        Jugador j2 = GameController.getJugador(2,GameController.getNroPartida());
-        labelJugador2.setText(j2.getNombre() + " con el "+j2.getPersonajeEnRonda().getApodo());
-        barraJugador2.setValue(j2.getPersonajeEnRonda().getSalud());
-        labelVidaJugador2.setText(Integer.toString(j2.getPersonajeEnRonda().getSalud()));
+        jugador2 = GameController.getJugador(2,GameController.getNroPartida());
+        labelJugador2.setText(jugador2.getNombre() + " con el "+jugador2.getPersonajeEnRonda().getApodo());
+        barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
+        labelVidaJugador2.setText(Integer.toString(jugador2.getPersonajeEnRonda().getSalud()));
 
         UICarta carta;
 
         for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR; i++){
             carta = listaDeCartas.get(i-1);
-            carta.setJugador(j1);
-            carta.setPersonaje(j1.getPersonaje(i-1));
-            //TODO: CARGAR LAS CARACTERISTICAS DE CADA PERSONAJE.
+            carta.setJugador(jugador1);
+            carta.setPersonaje(jugador1.getPersonaje(i-1));
         }
         for (int i=4; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR; i++){
             carta = listaDeCartas.get(i-1);
-            carta.setJugador(j2);
-            carta.setPersonaje(j2.getPersonaje(i-1));
-            //TODO: CARGAR LAS CARACTERISTICAS DE CADA PERSONAJE.
+            carta.setJugador(jugador2);
+            carta.setPersonaje(jugador2.getPersonaje(i-1));
         }
 
-
+        caracteristicasIzq.setCaracteristicas(jugador1.getPersonajeEnRonda());
+        caracteristicasDer.setCaracteristicas(jugador2.getPersonajeEnRonda());
+        caracteristicasDer.ubicarCaracteristicas(GameController.LADODERECHO);
+        caracteristicasIzq.ubicarCaracteristicas(GameController.LADODIZQUIERDO);
+        if(GameController.getJugadorDeTurno()==jugador1){
+            botonAtacar.setBounds(250, 230, 120,30);
+            botonAtacar.setText("Atacarr!! >>>");
+        }else{
+            botonAtacar.setBounds(440, 230, 120,30);
+            botonAtacar.setText("<<< Atacarr!!");
+        }
     }
 
 

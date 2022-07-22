@@ -12,7 +12,6 @@ public class UICarta extends JPanel {
     private Jugador jugador;
     private Personaje personaje;
     private int lado;//0 es izquierda 1 es derecha
-    private UICaracteristicas caracteristicas;
 
     public void UICarta(){
     }
@@ -41,5 +40,4 @@ public class UICarta extends JPanel {
         return lado;
     }
 
-    //TODO: HACER LO DE CARACTERISTICAS....
 }

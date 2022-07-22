@@ -10,6 +10,8 @@ public class GameController {
     private static int ronda = 1;
     public static final int CANTIDADDEPERSONAJESPORJUGADOR = 3;
     public static final int CANTIDADDEATAQUESPORJUGADOR = 7;
+    public static final int LADODERECHO = 1;
+    public static final int LADODIZQUIERDO = 0;
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
 
@@ -27,8 +29,8 @@ public class GameController {
         //repartir los presonajes (cartas) mostrar carteles
         repartirLosPersonajes();
         Partida partidaActual = listaDePartidas.get(nroPartida-1);
-        partidaActual.setJugadorDeTurno(sortearJugador());
 
+        partidaActual.setJugadorDeTurno(sortearJugador());
         partidaActual.getJugadorDeTurno().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorDeTurno()));
         partidaActual.getJugadorEnEspera().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorEnEspera()));
 
@@ -46,6 +48,8 @@ public class GameController {
     public static int getNroPartida() {
         return nroPartida;
     }
+
+
 
     public static void repartirLosPersonajes(){
         int jugador;
@@ -97,6 +101,78 @@ public class GameController {
             return listaDePartidas.get(partida-1).getJugador2();
         }
     }
+
+    public static Jugador getJugadorDeTurno() {
+        Partida partida = listaDePartidas.get(getNroPartida()-1);
+        return partida.getJugadorDeTurno();
+    }
+    public static Jugador getJugadorEnEspera() {
+        Partida partida = listaDePartidas.get(getNroPartida()-1);
+        return partida.getJugadorEnEspera();
+    }
+
+    public static void atacarAlOponente() {
+            Personaje atacante = GameController.getJugadorDeTurno().getPersonajeEnRonda();
+            Personaje oponente = GameController.getJugadorEnEspera().getPersonajeEnRonda();
+            int valor = atacante.probocarDanio(oponente);
+            oponente.setSalud(oponente.getSalud()-valor);
+            System.out.println(atacante.getNombre() + "ataco a "+ oponente.getNombre()+ " y le resto "+valor+ " de vida");
+    }
+
+    public static void actualizarNumeroDeAtaques() {
+        Personaje atacante = GameController.getJugadorDeTurno().getPersonajeEnRonda();
+        atacante.setAtaqueNro(atacante.getAtaqueNro()+1);
+    }
+
+    public static boolean finDeRonda() {
+        Personaje oponente = GameController.getJugadorEnEspera().getPersonajeEnRonda();
+        Personaje atacante = GameController.getJugadorDeTurno().getPersonajeEnRonda();
+        if(oponente.getSalud()<=0){
+            return true;
+        }
+        if(oponente.getAtaqueNro()==7 && atacante.getAtaqueNro()==7){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+    public static void setRonda(int ronda) {
+        GameController.ronda = ronda;
+    }
+
+    public static int getRonda() {
+        return GameController.ronda;
+    }
+
+    public static boolean finDeLaPartida() {
+        Partida partida = listaDePartidas.get(nroPartida-1);
+        Jugador jugador1 = partida.getJugador2();
+        Jugador jugador2 = partida.getJugador2();
+        if (((jugador1.getPersonaje(0).getSalud()==0) &&
+                (jugador1.getPersonaje(1).getSalud()==0) &&
+                (jugador1.getPersonaje(2).getSalud()==0)) ||
+            ((jugador2.getPersonaje(0).getSalud()==0) &&
+                (jugador2.getPersonaje(1).getSalud()==0) &&
+                (jugador2.getPersonaje(2).getSalud()==0))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static void setJugadorDeTurno(Jugador jugador) {
+        Partida partida = listaDePartidas.get(nroPartida-1);
+        partida.setJugadorDeTurno(jugador);
+    }
+
+    public static void setJugadorEnEspera(Jugador jugador) {
+        Partida partida = listaDePartidas.get(nroPartida-1);
+        partida.setJugadorEnEspera(jugador);
+    }
+
+
 
     public void terminarJuego(){
 
@@ -161,8 +237,10 @@ public class GameController {
     public static Jugador sortearJugador(){
         int jugador = (int)(Math.random()*2);
         if (jugador == 0){
+            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador1().getNombre() +"para iniciar la ronda.");
             return listaDePartidas.get(nroPartida-1).getJugador1();
         }else{
+            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador2().getNombre() +"para iniciar la ronda.");
             return listaDePartidas.get(nroPartida-1).getJugador2();
         }
     }

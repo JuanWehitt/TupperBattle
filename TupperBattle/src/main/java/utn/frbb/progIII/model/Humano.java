@@ -26,7 +26,7 @@ public class Humano extends Personaje{
         int ED = r.nextInt(100)+1;
         int VA = PD * ED;
         int Pdef = susCaracteristicas.getArmadura() * susCaracteristicas.getVelocidad();
-        double danio = (((VA*ED) - Pdef) / 500) * 100;
+        double danio = (((VA*ED) - Pdef) / 500) * 1.00;
         return (int)Math.round(danio);
     }
 }

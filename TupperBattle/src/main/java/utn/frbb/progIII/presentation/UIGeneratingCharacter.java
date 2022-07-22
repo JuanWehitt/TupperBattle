@@ -207,7 +207,8 @@ public class UIGeneratingCharacter extends JPanel {
                             sliderVelocidad.getValue(),
                             sliderDestreza.getValue(),
                             sliderFuerza.getValue(),
-                            sliderArmadura.getValue());
+                            sliderArmadura.getValue(),
+                            1);
                     if (nroPersonaje > GameController.cantDePersonajesCreados()) {
                         if (boxRaza.getSelectedIndex() == HUMANO) {
                             Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
@@ -238,6 +239,7 @@ public class UIGeneratingCharacter extends JPanel {
                             car.setFuerza(sliderFuerza.getValue());
                             car.setDestreza(sliderDestreza.getValue());
                             car.setArmadura(sliderArmadura.getValue());
+
                         } else{ //cambio de raza
                             if (boxRaza.getSelectedIndex() == HUMANO) {
                                 Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
@@ -271,7 +273,8 @@ public class UIGeneratingCharacter extends JPanel {
                             sliderVelocidad.getValue(),
                             sliderDestreza.getValue(),
                             sliderFuerza.getValue(),
-                            sliderArmadura.getValue());
+                            sliderArmadura.getValue(),
+                            1);
 
                     if (boxRaza.getSelectedIndex() == HUMANO) {
                         Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
