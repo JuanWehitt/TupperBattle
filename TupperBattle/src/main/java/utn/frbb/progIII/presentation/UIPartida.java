@@ -31,6 +31,7 @@ public class UIPartida extends JPanel{
     private UICaracteristicas caracteristicasIzq, caracteristicasDer;
     private JButton botonAtacar;
     private JPanel panelPartida;
+    private JLabel labelLog;
 
     public void setVisible(boolean val){
         panelPartida.setVisible(val);
@@ -98,7 +99,12 @@ public class UIPartida extends JPanel{
             }
         });
         panelPartida.add(botonAtacar);
-
+        labelLog = new JLabel("",SwingConstants.CENTER);
+        labelLog.setBackground(new Color(0,0,0,0));
+        labelLog.setBounds(0,470,800,30);
+        //labelLog.setHorizontalTextPosition(SwingConstants.CENTER);
+        labelLog.setText("HOLA");
+        panelPartida.add(labelLog);
         imprimirCartas(panelPartida);
 
         frame.add(panelPartida);
@@ -106,13 +112,17 @@ public class UIPartida extends JPanel{
     }
 
     private void clickEnAtacar(){
-        GameController.atacarAlOponente();
+        int leSaco = GameController.atacarAlOponente();
+        labelLog.setText("El "+GameController.getJugadorDeTurno().getPersonajeEnRonda().getApodo() + " le sacó "+ leSaco + " de vida a el"+ GameController.getJugadorEnEspera().getPersonajeEnRonda().getApodo());
         GameController.actualizarNumeroDeAtaques();
         barraJugador1.setValue(jugador1.getPersonajeEnRonda().getSalud());
         barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
         //cartel con thread restando en rojo la vida que le saco.
-        if (GameController.finDeRonda()){
+        if (GameController.esFinDeRonda()){
+            GameController.finalizarRonda();
             //cartel del ganador de la ronda, por pmuerte o por completar los 7 ataques.
+            labelLog.setText(GameController.getJugadorDeTurno().getNombre()+" gano con el personaje "+GameController.getJugadorDeTurno().getPersonajeEnRonda()+" y gano +20 de vida");
+            GameController.setVidaGanador();
             //cartel de nivel o lo que se gano, 10 de vida
             //cartel de se sortearan los opnentes.
             //sortear los oponentes.
@@ -124,7 +134,6 @@ public class UIPartida extends JPanel{
         }
 
         if(GameController.getJugadorDeTurno()==jugador1){
-            //Jugador jaux = jugador1;
             GameController.setJugadorDeTurno(jugador2);
             GameController.setJugadorEnEspera(jugador1);
             botonAtacar.setBounds(420, 230, 120,30);
@@ -132,7 +141,6 @@ public class UIPartida extends JPanel{
         }else{
             GameController.setJugadorDeTurno(jugador1);
             GameController.setJugadorEnEspera(jugador2);
-
             botonAtacar.setBounds(250, 230, 120,30);
             botonAtacar.setText("Atacarr!! >>>");
         }

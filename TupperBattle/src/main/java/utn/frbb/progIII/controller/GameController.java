@@ -111,12 +111,13 @@ public class GameController {
         return partida.getJugadorEnEspera();
     }
 
-    public static void atacarAlOponente() {
+    public static int atacarAlOponente() {
             Personaje atacante = GameController.getJugadorDeTurno().getPersonajeEnRonda();
             Personaje oponente = GameController.getJugadorEnEspera().getPersonajeEnRonda();
             int valor = atacante.probocarDanio(oponente);
             oponente.setSalud(oponente.getSalud()-valor);
             System.out.println(atacante.getNombre() + "ataco a "+ oponente.getNombre()+ " y le resto "+valor+ " de vida");
+            return valor;
     }
 
     public static void actualizarNumeroDeAtaques() {
@@ -124,7 +125,7 @@ public class GameController {
         atacante.setAtaqueNro(atacante.getAtaqueNro()+1);
     }
 
-    public static boolean finDeRonda() {
+    public static boolean esFinDeRonda() {
         Personaje oponente = GameController.getJugadorEnEspera().getPersonajeEnRonda();
         Personaje atacante = GameController.getJugadorDeTurno().getPersonajeEnRonda();
         if(oponente.getSalud()<=0){
@@ -172,6 +173,24 @@ public class GameController {
         partida.setJugadorEnEspera(jugador);
     }
 
+    public static void setVidaGanador() {
+    }
+
+    public static void finalizarRonda() {
+        Partida partida = listaDePartidas.get(nroPartida-1);
+        Jugador jugadorGanador,jugadorPerdedor;
+        if(partida.getJugador1().getPersonajeEnRonda().getSalud()==0){
+            jugadorGanador = partida.getJugador1();
+            jugadorPerdedor = partida.getJugador2();
+        }else {
+            jugadorGanador = partida.getJugador2();
+            jugadorPerdedor = partida.getJugador1();
+
+        }
+        partida.setGanadorDeRonda(jugadorGanador);
+        partida.setPerdedorDeRonda(jugadorPerdedor);
+
+    }
 
 
     public void terminarJuego(){

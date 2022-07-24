@@ -22,7 +22,7 @@ public class Orco extends Personaje{
         int ED = r.nextInt(100)+1;
         int VA = PD * ED;
         int Pdef = susCaracteristicas.getArmadura() * susCaracteristicas.getVelocidad();
-        double danio = ((((VA*ED)-Pdef)/500)*100 ) * 1.1;
+        double danio = (double) ((double)(((VA*ED) - Pdef) / 500000.0) * 100.0 * 1.1);
         return (int)Math.round(danio);
     }
 }
