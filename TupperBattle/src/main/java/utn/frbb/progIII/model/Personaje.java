@@ -13,6 +13,7 @@ public abstract class Personaje {
     private int salud;
     private String imagen;
     private CaracteristicasPersonaje caracteristicas;
+    private boolean muerto;
 
 
 
@@ -30,7 +31,7 @@ public abstract class Personaje {
         this.fechaNac = fechaNac;
         this.salud = salud;
         this.caracteristicas = new CaracteristicasPersonaje();
-
+        this.muerto = false;
     }
 
     public int getAtaqueNro() {
@@ -84,6 +85,14 @@ public abstract class Personaje {
         return edad;
     }
 
+    public boolean isMuerto() {
+        return muerto;
+    }
+
+    public void setMuerto(boolean muerto) {
+        this.muerto = muerto;
+    }
+
     public void setEdad(int edad) {
         this.edad = edad;
     }
@@ -94,6 +103,11 @@ public abstract class Personaje {
 
     public void setSalud(int salud) {
         this.salud = salud;
+        if (salud <= 0){
+            muerto = true;
+        }else{
+            muerto = false;
+        }
     }
 
     public String getImagen() {

@@ -22,12 +22,15 @@ public class Humano extends Personaje{
         Random r = new Random();
         CaracteristicasPersonaje misCaracteristicas = this.getCaracteristicas();
         CaracteristicasPersonaje susCaracteristicas = contrincante.getCaracteristicas();
-        int PD = misCaracteristicas.getDestreza() * misCaracteristicas.getFuerza() * misCaracteristicas.getNivel();
-        int ED = r.nextInt(100)+1;
+        int PD = misCaracteristicas.getDestreza() * misCaracteristicas.getFuerza() * misCaracteristicas.getNivel();//1
+        int ED = r.nextInt(100)+1;//1
 
-        int VA = PD * ED;
-        int Pdef = susCaracteristicas.getArmadura() * susCaracteristicas.getVelocidad();
+        int VA = PD * ED;//1
+        int Pdef = susCaracteristicas.getArmadura() * susCaracteristicas.getVelocidad();//1
         double danio = (double) ((double)(((VA*ED) - Pdef) / 500000.0) * 100.0);
+        if (danio<0.999){
+            danio = danio*10;
+        }
         //System.out.println("el rndmo al atacar es de "+ED+". El PD es de "+PD+" VA es "+VA+". PDef es "+Pdef+". Danio es "+danio+". La division da "+(double)(((VA*ED) - Pdef) / 500000.0));
         return (int)Math.round(danio);
     }

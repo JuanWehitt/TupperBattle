@@ -11,10 +11,20 @@ public class Partida {
     private Jugador perdedorDeRonda;
     private Jugador jugadorDeTurno;
     private Jugador jugadorEnEspera;
+    private int nroDeRonda;
 
     public Partida(Jugador jugador1, Jugador jugador2) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
+        nroDeRonda = 1;
+    }
+
+    public int getNroDeRonda() {
+        return nroDeRonda;
+    }
+
+    public void setNroDeRonda(int nroDeRonda) {
+        this.nroDeRonda = nroDeRonda;
     }
 
     public Jugador getGanadorDeRonda() {

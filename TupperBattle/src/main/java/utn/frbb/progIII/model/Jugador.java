@@ -53,5 +53,14 @@ public class Jugador {
         this.personajeEnRonda = personajeEnRonda;
     }
 
+    public int cantidadDePersonajesVivos(){
+        int i = 0;
+        for (int e=0; e<listaPersonajes.size(); e++){
+            if (!listaPersonajes.get(e).isMuerto()){
+                i++;
+            }
+        }
+        return i;
+    }
 
 }
