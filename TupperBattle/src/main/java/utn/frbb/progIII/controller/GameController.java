@@ -7,7 +7,8 @@ import java.util.List;
 
 public class GameController {
 
-    private static final int SALUDEXTRAALGANAR = 20;
+
+    public static final int VIDAEXTRAALGANAR = 20;
     public static final int CANTIDADDEPERSONAJESPORJUGADOR = 3;
     public static final int CANTIDADDEATAQUESPORJUGADOR = 7;
     public static final int LADODERECHO = 1;
@@ -15,6 +16,8 @@ public class GameController {
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
     private static Partida partidaActual;
+    //private static Jugador jugadorGanador;
+    //private static Jugador jugadorPerdedor;
 
     private static List<Personaje> listaPersonajes = new ArrayList<>(CANTIDADDEPERSONAJESPORJUGADOR*2);
 
@@ -23,14 +26,18 @@ public class GameController {
     }
 
     public static void iniciarJuego(){
-
-        //repartir los presonajes (cartas) mostrar carteles
-        repartirLosPersonajes();
         partidaActual = listaDePartidas.get(nroPartida-1);
+        //repartir los presonajes (cartas) mostrar carteles
 
-        partidaActual.setJugadorDeTurno(sortearJugador());
+        if(partidaActual.getNroDeRonda()==1) {
+            repartirLosPersonajes();
+            partidaActual.setJugadorDeTurno(sortearJugador());
+        }else{
+            partidaActual.setJugadorDeTurno(partidaActual.getPerdedorDeRonda(partidaActual.getNroDeRonda()-1));
+        }
         partidaActual.getJugadorDeTurno().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorDeTurno()));
         partidaActual.getJugadorEnEspera().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorEnEspera()));
+        setNroAtaques(1);
 
 
         //crear la Partida
@@ -82,7 +89,7 @@ public class GameController {
 
     }
 
-    public static void crearLaPartida(String nombreJugador1, String nombreJugador2) {
+    public static void crearPartida(String nombreJugador1, String nombreJugador2) {
         listaDePartidas.add(new Partida(new Jugador(), new Jugador()));
         Partida p = listaDePartidas.get(listaDePartidas.size()-1);
         Jugador j1 = p.getJugador1();
@@ -114,7 +121,7 @@ public class GameController {
             Personaje oponente = GameController.getJugadorEnEspera().getPersonajeEnRonda();
             int valor = atacante.probocarDanio(oponente);
             oponente.setSalud(oponente.getSalud()-valor);
-            System.out.println(atacante.getNombre() + "ataco a "+ oponente.getNombre()+ " y le resto "+valor+ " de vida");
+            System.out.println(atacante.getNombre() + " ataco a "+ oponente.getNombre()+ " y le resto "+valor+ " de vida");
             return valor;
     }
 
@@ -123,14 +130,17 @@ public class GameController {
         atacante.setAtaqueNro(atacante.getAtaqueNro()+1);
     }
 
-
-    public static void setRonda(int ronda) {
-        partidaActual.setNroDeRonda(ronda);
+    public static void nuevaRonda(){
+        partidaActual.nuevaRonda();
     }
-
 
     public static int getRonda() {
         return partidaActual.getNroDeRonda();
+    }
+
+    public static Jugador getGanadorDeRonda(){
+        //Partida partida = listaDePartidas.get(nroPartida-1);
+        return partidaActual.getGanadorDeRonda(partidaActual.getNroDeRonda());
     }
 
     public static void setJugadorDeTurno(Jugador jugador) {
@@ -147,16 +157,19 @@ public class GameController {
         Partida partida = listaDePartidas.get(nroPartida-1);
         Jugador jugador1 = partida.getJugador2();
         Jugador jugador2 = partida.getJugador2();
-        if (((jugador1.getPersonaje(0).getSalud()==0) &&
-                (jugador1.getPersonaje(1).getSalud()==0) &&
-                (jugador1.getPersonaje(2).getSalud()==0)) ||
-                ((jugador2.getPersonaje(0).getSalud()==0) &&
-                        (jugador2.getPersonaje(1).getSalud()==0) &&
-                        (jugador2.getPersonaje(2).getSalud()==0))){
-            return true;
+        return (jugador1.cantidadDePersonajesVivos()==0 || jugador2.cantidadDePersonajesVivos()==0);
+    }
+
+    public static void finalizarPartida() {
+        Partida partida = listaDePartidas.get(nroPartida-1);
+        Jugador jugador1 = partida.getJugador2();
+        Jugador jugador2 = partida.getJugador2();
+        if (jugador1.cantidadDePersonajesVivos()==0){
+            partida.setJugadorGanador(jugador2);
         }else{
-            return false;
+            partida.setJugadorGanador(jugador1);
         }
+
     }
 
     public static boolean esFinDeRonda() {
@@ -165,7 +178,7 @@ public class GameController {
         if(oponente.isMuerto()){
             return true;
         }
-        if(oponente.getAtaqueNro()==7 && atacante.getAtaqueNro()==7){
+        if(oponente.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1 && atacante.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1){
             return true;
         }else{
             return false;
@@ -185,13 +198,13 @@ public class GameController {
         //si la ronda termino por numero de ataques
 
 
-        if (personajeJ1.getAtaqueNro()==7 && personajeJ2.getAtaqueNro()==7){
+        if (personajeJ1.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1 && personajeJ2.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1){
             if (personajeJ1.getSalud()<=personajeJ2.getSalud()){
-                jugadorGanador = partida.getJugador1();
-                jugadorPerdedor = partida.getJugador2();
-            }else{
                 jugadorGanador = partida.getJugador2();
                 jugadorPerdedor = partida.getJugador1();
+            }else{
+                jugadorGanador = partida.getJugador1();
+                jugadorPerdedor = partida.getJugador2();
             }
         }else {
             if (partida.getJugador2().getPersonajeEnRonda().isMuerto()) {
@@ -202,19 +215,22 @@ public class GameController {
                 jugadorPerdedor = partida.getJugador1();
             }
         }
-        jugadorGanador.getPersonajeEnRonda().setSalud(jugadorGanador.getPersonajeEnRonda().getSalud()+SALUDEXTRAALGANAR);
+        jugadorGanador.getPersonajeEnRonda().setSalud(jugadorGanador.getPersonajeEnRonda().getSalud()+VIDAEXTRAALGANAR);
         jugadorGanador.getPersonajeEnRonda().setAtaqueNro(1);
         jugadorPerdedor.getPersonajeEnRonda().setAtaqueNro(1);
         partida.setGanadorDeRonda(jugadorGanador);
         partida.setPerdedorDeRonda(jugadorPerdedor);
-        partida.setNroDeRonda(partida.getNroDeRonda()+1);
+
     }
 
-    public static Jugador getJugadorGanador() {
-        Partida partida = listaDePartidas.get(nroPartida-1);
-        return partida.getGanadorDeRonda();
+    public static Jugador getGanadorDePartida() {
+        return partidaActual.getJugadorGanador();
     }
 
+    public static void setNroAtaques(int i) {
+        partidaActual.getJugador1().getPersonajeEnRonda().setAtaqueNro(1);
+        partidaActual.getJugador2().getPersonajeEnRonda().setAtaqueNro(1);
+    }
 
     public void terminarJuego(){
 
@@ -273,7 +289,7 @@ public class GameController {
                 p = jugador.getPersonaje(nroPersonajeSorteado);
             }
             jugador.setPersonajeEnRonda(p);
-            System.out.println("Se sorteo del Jugador " + jugador.getNombre() + " el personaje + " + p.getNombre() + " el " + p.getApodo());
+            System.out.println("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo());
             return p;
         }else{
             return null;
@@ -283,10 +299,10 @@ public class GameController {
     public static Jugador sortearJugador(){
         int jugador = (int)(Math.random()*2);
         if (jugador == 0){
-            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador1().getNombre() +"para iniciar la ronda.");
+            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador1().getNombre() +" para iniciar la ronda.");
             return listaDePartidas.get(nroPartida-1).getJugador1();
         }else{
-            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador2().getNombre() +"para iniciar la ronda.");
+            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador2().getNombre() +" para iniciar la ronda.");
             return listaDePartidas.get(nroPartida-1).getJugador2();
         }
     }

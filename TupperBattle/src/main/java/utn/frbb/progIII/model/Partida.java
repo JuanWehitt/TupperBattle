@@ -1,22 +1,27 @@
 package utn.frbb.progIII.model;
 
+import utn.frbb.progIII.controller.GameController;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Partida {
 
     private String id;
     private Jugador jugador1,jugador2,jugadorGanador;
-    private Jugador ganadorDeRonda;
-    private Jugador perdedorDeRonda;
     private Jugador jugadorDeTurno;
     private Jugador jugadorEnEspera;
+    private List<Ronda> listaDeRondas;
     private int nroDeRonda;
 
     public Partida(Jugador jugador1, Jugador jugador2) {
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
         nroDeRonda = 1;
+        listaDeRondas = new ArrayList<>();
+        listaDeRondas.add(new Ronda(nroDeRonda));
     }
 
     public int getNroDeRonda() {
@@ -27,20 +32,25 @@ public class Partida {
         this.nroDeRonda = nroDeRonda;
     }
 
-    public Jugador getGanadorDeRonda() {
-        return ganadorDeRonda;
+    public Jugador getGanadorDeRonda(int nroRonda) {
+        return listaDeRondas.get(nroRonda-1).getJugadorGanador();
     }
 
     public  void setGanadorDeRonda(Jugador ganadorDeRonda) {
-        this.ganadorDeRonda = ganadorDeRonda;
+        listaDeRondas.get(nroDeRonda-1).setJugadorGanador(ganadorDeRonda);
     }
 
-    public  Jugador getPerdedorDeRonda() {
-        return perdedorDeRonda;
+    public  Jugador getPerdedorDeRonda(int nroRonda) {
+        return listaDeRondas.get(nroRonda-1).getJugadorPerdedor();
     }
 
     public  void setPerdedorDeRonda(Jugador perdedorDeRonda) {
-        this.perdedorDeRonda = perdedorDeRonda;
+        listaDeRondas.get(nroDeRonda-1).setJugadorPerdedor(perdedorDeRonda);
+    }
+
+    public void nuevaRonda(){
+        listaDeRondas.add(new Ronda(nroDeRonda+1));
+        nroDeRonda++;
     }
 
     public  Jugador getJugadorDeTurno() {
@@ -95,4 +105,5 @@ public class Partida {
     public void setJugadorGanador(Jugador jugadorGanador) {
         this.jugadorGanador = jugadorGanador;
     }
+
 }

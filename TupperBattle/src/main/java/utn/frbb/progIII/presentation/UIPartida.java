@@ -147,47 +147,63 @@ public class UIPartida extends JPanel{
 
         barraJugador1.setValue(jugador1.getPersonajeEnRonda().getSalud());
         barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
-        //cartel con thread restando en rojo la vida que le saco.
+        GameController.actualizarNumeroDeAtaques();
+
         if (GameController.esFinDeRonda()){
             GameController.finalizarRonda();
-            //cartel del ganador de la ronda, por muerte o por completar los 7 ataques.
             JOptionPane.showMessageDialog(null,
-                    "Ganó "+GameController.getJugadorGanador().getNombre()+ " con "+GameController.getJugadorGanador().getPersonajeEnRonda().getNombre(),
+                    "Ganó "+GameController.getGanadorDeRonda().getNombre()+ " con "+GameController.getGanadorDeRonda().getPersonajeEnRonda().getNombre(),
                     "Fin de la ronda", JOptionPane.INFORMATION_MESSAGE);
-            labelLog.setText(GameController.getJugadorGanador().getNombre()+" gano con el personaje "+GameController.getJugadorGanador().getPersonajeEnRonda().getNombre()+" y gano +20 de vida");
+            labelLog.setText(GameController.getGanadorDeRonda().getNombre()+" gano con el personaje "+GameController.getGanadorDeRonda().getPersonajeEnRonda().getNombre()+" y gano "+GameController.VIDAEXTRAALGANAR +" de vida");
+            if (GameController.esFinDeLaPartida()) {
+                GameController.finalizarPartida();
+                //preguntar si se quiere comenzar de nuevo otra partida. con las vidas en 100 y los mismos personajes creados.
+                JOptionPane.showMessageDialog(null,
+                        "Ganó "+GameController.getGanadorDePartida().getNombre()+ " con "+GameController.getGanadorDePartida().getPersonajeEnRonda().getNombre(),
+                        "Fin de la Partida", JOptionPane.INFORMATION_MESSAGE);
+                labelLog.setText("GANO "+GameController.getGanadorDePartida().getNombre().toUpperCase()+ " !!!");
+                int respuest = JOptionPane.showConfirmDialog(panelPartida,
+                        "Jugamos de nuevo? Se repartiran los personajes de nuevo.",
+                        "Juguemos", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (respuest==JOptionPane.YES_OPTION){
+                    registroJugadores();
+                    GameController.iniciarJuego();
+                    cargarDatosJuego();
+                }else{
+                    panelPartida.setVisible(false);
+                    UIMenu.visible(true);
+                }
+            }else {
+                GameController.nuevaRonda();
+                //cartel de se sortearan los opnentes.
+                JOptionPane.showMessageDialog(null,
+                        "Se sortearan los oponentes para la siguiente ronda",
+                        "Siguiente ronda", JOptionPane.INFORMATION_MESSAGE);
+                //sortear los oponentes.
+                GameController.iniciarJuego();
+                cargarDatosJuego();
+                //TODO: ARREGLAR RESETEO DE NUMERO DE ATAQUES AL INICIAR OTRA RONDA.
+            }
+        }else {
 
-            //cartel de se sortearan los opnentes.
-            JOptionPane.showMessageDialog(null,
-                    "Se sortearan los oponentes para la siguiente ronda",
-                    "Siguiente ronda", JOptionPane.INFORMATION_MESSAGE);
-            //sortear los oponentes.
-            // TODO: VERIFICAR SI TIENE PERSONAJES VIVOS..sortearPersonajeDeJugador RETORNA NULL SI NO HAY VIVOS..
-            GameController.sortearPersonajeDeJugador(jugador1);
-            GameController.sortearPersonajeDeJugador(jugador2);
-            // TODO: CORREGIR LAS 2 LINEAS DE ARRIBA
-            GameController.setRonda(GameController.getRonda()+1);
-            labelRonda.setText(Integer.toString(GameController.getRonda()));
-        }else{
-            GameController.actualizarNumeroDeAtaques();
-            labelNroDeAtaqueJugador1.setText(jugador1.getPersonajeEnRonda().getAtaqueNro()+" de "+GameController.CANTIDADDEATAQUESPORJUGADOR);
-            labelNroDeAtaqueJugador2.setText(jugador2.getPersonajeEnRonda().getAtaqueNro()+" de "+GameController.CANTIDADDEATAQUESPORJUGADOR);
-        }
-        if(GameController.esFinDeLaPartida()){
-            GameController.setRonda(1);
-            labelRonda.setText("1");
-            //preguntar si se quiere comenzar de nuevo otra partida. con las vidas en 100 y los mismos personajes creados.
-        }
+            if(jugador1.getPersonajeEnRonda().getAtaqueNro()<=GameController.CANTIDADDEATAQUESPORJUGADOR) {
+                labelNroDeAtaqueJugador1.setText(jugador1.getPersonajeEnRonda().getAtaqueNro() + " de " + GameController.CANTIDADDEATAQUESPORJUGADOR);
+            }
+            if(jugador2.getPersonajeEnRonda().getAtaqueNro()<=GameController.CANTIDADDEATAQUESPORJUGADOR) {
+                labelNroDeAtaqueJugador2.setText(jugador2.getPersonajeEnRonda().getAtaqueNro() + " de " + GameController.CANTIDADDEATAQUESPORJUGADOR);
+            }
 
-        if(GameController.getJugadorDeTurno()==jugador1){
-            GameController.setJugadorDeTurno(jugador2);
-            GameController.setJugadorEnEspera(jugador1);
-            botonAtacar.setBounds(435, 230, 120,30);
-            botonAtacar.setText("<<< Atacarr!!");
-        }else{
-            GameController.setJugadorDeTurno(jugador1);
-            GameController.setJugadorEnEspera(jugador2);
-            botonAtacar.setBounds(250, 230, 120,30);
-            botonAtacar.setText("Atacarr!! >>>");
+            if (GameController.getJugadorDeTurno() == jugador1) {
+                GameController.setJugadorDeTurno(jugador2);
+                GameController.setJugadorEnEspera(jugador1);
+                botonAtacar.setBounds(435, 230, 120, 30);
+                botonAtacar.setText("<<< Atacarr!!");
+            } else {
+                GameController.setJugadorDeTurno(jugador1);
+                GameController.setJugadorEnEspera(jugador2);
+                botonAtacar.setBounds(250, 230, 120, 30);
+                botonAtacar.setText("Atacarr!! >>>");
+            }
         }
     }
 
@@ -241,7 +257,7 @@ public class UIPartida extends JPanel{
             if ( nombre2 == null){
                 UIMenu.windowGeneratingCharacter.setVisible(true);
             } else {
-                GameController.crearLaPartida(nombre1,nombre2);
+                GameController.crearPartida(nombre1,nombre2);
                 JOptionPane.showMessageDialog(null, "Se repartiran las cartas",
                         "Repartija", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -285,7 +301,7 @@ public class UIPartida extends JPanel{
             botonAtacar.setBounds(440, 230, 120,30);
             botonAtacar.setText("<<< Atacarr!!");
         }
-        labelRonda.setText("1");
+        labelRonda.setText(Integer.toString(GameController.getRonda()));
     }
 
 
