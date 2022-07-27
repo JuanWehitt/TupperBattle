@@ -63,4 +63,9 @@ public class Jugador {
         return i;
     }
 
+    public void revivirPersonajes() {
+        for(Personaje personaje : listaPersonajes){
+            personaje.setSalud(100);
+        }
+    }
 }

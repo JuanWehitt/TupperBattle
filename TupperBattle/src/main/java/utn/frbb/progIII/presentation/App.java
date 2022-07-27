@@ -18,5 +18,6 @@ public class App
         JFrame frame = uiMenu.crearVentana();
         UIPartida partida = new UIPartida();
         //UIVentana miventana = new UIVentana();
+        frame.repaint();
     }
 }

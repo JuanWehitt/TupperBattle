@@ -151,15 +151,24 @@ public class UIPartida extends JPanel{
 
         if (GameController.esFinDeRonda()){
             GameController.finalizarRonda();
+            Personaje pGanador,pPerdedor;
+            Jugador jGanador,jPerdedor;
+            jGanador = GameController.getGanadorDeRonda();
+            jPerdedor = GameController.getPerdedorDeRonda();
+            pGanador = jGanador.getPersonajeEnRonda();
+            pPerdedor = jPerdedor.getPersonajeEnRonda();
+            System.out.println("Finalizo la ronda, gano "+jGanador.getNombre()+ " con "+pGanador.getNombre());
+            System.out.println("");
+
             JOptionPane.showMessageDialog(null,
-                    "Ganó "+GameController.getGanadorDeRonda().getNombre()+ " con "+GameController.getGanadorDeRonda().getPersonajeEnRonda().getNombre(),
+                    "Ganó "+jGanador.getNombre()+ " con "+pGanador.getNombre(),
                     "Fin de la ronda", JOptionPane.INFORMATION_MESSAGE);
-            labelLog.setText(GameController.getGanadorDeRonda().getNombre()+" gano con el personaje "+GameController.getGanadorDeRonda().getPersonajeEnRonda().getNombre()+" y gano "+GameController.VIDAEXTRAALGANAR +" de vida");
+            labelLog.setText(jGanador.getNombre()+" gano con el personaje "+pGanador.getNombre()+" y gano "+GameController.VIDAEXTRAALGANAR +" de vida");
             if (GameController.esFinDeLaPartida()) {
                 GameController.finalizarPartida();
                 //preguntar si se quiere comenzar de nuevo otra partida. con las vidas en 100 y los mismos personajes creados.
                 JOptionPane.showMessageDialog(null,
-                        "Ganó "+GameController.getGanadorDePartida().getNombre()+ " con "+GameController.getGanadorDePartida().getPersonajeEnRonda().getNombre(),
+                        "GANASTE "+jGanador.getNombre().toUpperCase()+"!!!!",
                         "Fin de la Partida", JOptionPane.INFORMATION_MESSAGE);
                 labelLog.setText("GANO "+GameController.getGanadorDePartida().getNombre().toUpperCase()+ " !!!");
                 int respuest = JOptionPane.showConfirmDialog(panelPartida,
@@ -182,7 +191,9 @@ public class UIPartida extends JPanel{
                 //sortear los oponentes.
                 GameController.iniciarJuego();
                 cargarDatosJuego();
-                //TODO: ARREGLAR RESETEO DE NUMERO DE ATAQUES AL INICIAR OTRA RONDA.
+                labelLog.setText("Juegan "+jGanador.getPersonajeEnRonda().getApodo()+
+                        " contra "+jPerdedor.getPersonajeEnRonda().getApodo()+
+                        ". Comienza "+jPerdedor.getNombre());
             }
         }else {
 
@@ -205,29 +216,30 @@ public class UIPartida extends JPanel{
                 botonAtacar.setText("Atacarr!! >>>");
             }
         }
+        UIMenu.repintar();
     }
 
     public void imprimirCartas(JPanel panel){
         listaDeCartas = new ArrayList<UICarta>();
         //TODO: VER Panel con capas (jLayeredPane):  un contenedor que permite a sus componentes especificar su profundidad y superpponerse uno al otro cuando se necesite.
         for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
+            UICarta carta;
+            listaDeCartas.add(0,new UICarta());
+            carta = listaDeCartas.get(0);
             if(i<=3) {
-                UICarta carta;
-                listaDeCartas.add(0,new UICarta());
-                carta = listaDeCartas.get(0);
                 carta.setBounds(160-(i*20),185-(i*20),120,170);
                 carta.setLado(GameController.LADODIZQUIERDO);
-                carta.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
-                panel.add(carta);
+                carta.setNumero(i);
             }else{
-                UICarta carta;
-                listaDeCartas.add(0,new UICarta());
-                carta = listaDeCartas.get(0);
                 carta.setBounds(520+((i-3)*20),185-((i-3)*20),120,170);
                 carta.setLado(GameController.LADODERECHO);
-                carta.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
-                panel.add(carta);
+                carta.setNumero(i-3);
             }
+            carta.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
+            carta.setEliminado(false);
+            carta.setLayout(null);
+
+            panel.add(carta);
             caracteristicasDer = new UICaracteristicas();
             caracteristicasIzq = new UICaracteristicas();
             caracteristicasDer.setLayout(null);
@@ -283,11 +295,16 @@ public class UIPartida extends JPanel{
             carta = listaDeCartas.get(i-1);
             carta.setJugador(jugador1);
             carta.setPersonaje(jugador1.getPersonaje(i-1));
+            carta.crearImagenCarta();
+            if (carta.isEliminado()){
+
+            };
         }
         for (int i=4; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR; i++){
             carta = listaDeCartas.get(i-1);
             carta.setJugador(jugador2);
             carta.setPersonaje(jugador2.getPersonaje(i-1));
+            carta.crearImagenCarta();
         }
 
         caracteristicasIzq.setCaracteristicas(jugador1.getPersonajeEnRonda());
@@ -302,8 +319,14 @@ public class UIPartida extends JPanel{
             botonAtacar.setText("<<< Atacarr!!");
         }
         labelRonda.setText(Integer.toString(GameController.getRonda()));
+        labelNroDeAtaqueJugador1.setText("1 de "+GameController.CANTIDADDEATAQUESPORJUGADOR);
+        labelNroDeAtaqueJugador2.setText("1 de "+GameController.CANTIDADDEATAQUESPORJUGADOR);
+        labelLog.setText("Juegan "+GameController.getJugadorDeTurno().getPersonajeEnRonda().getApodo()+
+                " contra "+GameController.getJugadorEnEspera().getPersonajeEnRonda().getApodo()+
+                ". Comienza "+GameController.getJugadorDeTurno().getNombre());
     }
-
+    //TODO: MOSTRAR LA CARTA QUE JUGARA AL FRENTE
+    //TODO: SETEAR POSICIONES DE CARTAS..
 
 
 }

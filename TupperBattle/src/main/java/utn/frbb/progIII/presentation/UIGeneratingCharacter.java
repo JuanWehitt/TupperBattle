@@ -3,10 +3,14 @@ package utn.frbb.progIII.presentation;
 import utn.frbb.progIII.controller.GameController;
 import utn.frbb.progIII.model.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import static utn.frbb.progIII.presentation.UIMenu.ANCHOBOTON;
@@ -32,6 +36,8 @@ public class UIGeneratingCharacter extends JPanel {
     private JButton botonSiguiente;
     private JButton botonAnterior;
     private JLabel labelNroPersonaje;
+    private JLabel imagenLabel;
+    private JPanel panelCarta;
 
     public void setVisible(boolean val){
         panelGeneratingCharacter.setVisible(val);
@@ -50,9 +56,11 @@ public class UIGeneratingCharacter extends JPanel {
         labelTituloVentana.setFont(new Font("Arial", Font.BOLD, 25));
         panelGeneratingCharacter.add(labelTituloVentana);
 
-        JPanel panelCarta = new JPanel();
+        panelCarta = new JPanel();
         panelCarta.setBounds(10,60,200,250);
         panelCarta.setBackground(new Color(33, 40, 79));
+        panelCarta.setLayout(null);
+        mostrarCarta(HUMANO);
         panelGeneratingCharacter.add(panelCarta);
 
         JLabel labelNombre = new JLabel("NOMBRE:");
@@ -85,8 +93,8 @@ public class UIGeneratingCharacter extends JPanel {
         boxRaza.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //TODO: cambiar la imagen de la carta
-                //System.out.println("Cambio a "+boxRaza.getSelectedItem().toString());
+                mostrarCarta(boxRaza.getSelectedIndex());
+                //System.out.println("Cambio a "+boxRaza.getSelectedIndex());
             }
         });
         panelGeneratingCharacter.add(boxRaza);
@@ -202,6 +210,7 @@ public class UIGeneratingCharacter extends JPanel {
         botonSiguiente.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (textFieldApodo.getText().equals("")){textFieldApodo.setText(textFieldNombre.getText());}
                 if (nroPersonaje!=CANTIDADPERSONAJES) {
                     CaracteristicasPersonaje caracteristicasPersonaje = new CaracteristicasPersonaje(
                             sliderVelocidad.getValue(),
@@ -212,15 +221,15 @@ public class UIGeneratingCharacter extends JPanel {
                     if (nroPersonaje > GameController.cantDePersonajesCreados()) {
                         if (boxRaza.getSelectedIndex() == HUMANO) {
                             Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                            humano.setImagen("");
+                            humano.setImagen(GameController.PATHIMAGENHUMANO);
                             GameController.agregarPersonaje(nroPersonaje, humano, caracteristicasPersonaje);
                         } else if (boxRaza.getSelectedIndex() == ORCO) {
                             Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                            orco.setImagen("");
+                            orco.setImagen(GameController.PATHIMAGENORCO);
                             GameController.agregarPersonaje(nroPersonaje, orco, caracteristicasPersonaje);
                         } else {
                             Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                            elfo.setImagen("");
+                            elfo.setImagen(GameController.PATHIMAGENELFO);
                             GameController.agregarPersonaje(nroPersonaje, elfo, caracteristicasPersonaje);
                         }
 
@@ -243,15 +252,15 @@ public class UIGeneratingCharacter extends JPanel {
                         } else{ //cambio de raza
                             if (boxRaza.getSelectedIndex() == HUMANO) {
                                 Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                                humano.setImagen("");
+                                humano.setImagen(GameController.PATHIMAGENHUMANO);
                                 GameController.agregarPersonaje(nroPersonaje, humano, caracteristicasPersonaje);
                             } else if (boxRaza.getSelectedIndex() == ORCO) {
                                 Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                                orco.setImagen("");
+                                orco.setImagen(GameController.PATHIMAGENORCO);
                                 GameController.agregarPersonaje(nroPersonaje, orco, caracteristicasPersonaje);
                             } else {
                                 Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                                elfo.setImagen("");
+                                elfo.setImagen(GameController.PATHIMAGENELFO);
                                 GameController.agregarPersonaje(nroPersonaje, elfo, caracteristicasPersonaje);
                             }
                         }
@@ -278,15 +287,15 @@ public class UIGeneratingCharacter extends JPanel {
 
                     if (boxRaza.getSelectedIndex() == HUMANO) {
                         Humano humano = new Humano(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                        humano.setImagen("");
+                        humano.setImagen(GameController.PATHIMAGENHUMANO);
                         GameController.agregarPersonaje(nroPersonaje, humano, caracteristicasPersonaje);
                     } else if (boxRaza.getSelectedIndex() == ORCO) {
                         Orco orco = new Orco(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                        orco.setImagen("");
+                        orco.setImagen(GameController.PATHIMAGENORCO);
                         GameController.agregarPersonaje(nroPersonaje, orco, caracteristicasPersonaje);
                     } else {
                         Elfo elfo = new Elfo(textFieldNombre.getText(), textFieldApodo.getText(), textFieldFecha.getText(), 100);
-                        elfo.setImagen("");
+                        elfo.setImagen(GameController.PATHIMAGENELFO);
                         GameController.agregarPersonaje(nroPersonaje, elfo, caracteristicasPersonaje);
                     }
 
@@ -325,22 +334,51 @@ public class UIGeneratingCharacter extends JPanel {
         sliderDestreza.setValue(3);
     }
     public void mostrarPersonaje(Personaje p){
+
         if (p!=null) {
             textFieldNombre.setText(p.getNombre());
             textFieldApodo.setText(p.getApodo());
             textFieldFecha.setText(p.getFechaNac());
             if (p instanceof Humano) {
                 boxRaza.setSelectedIndex(HUMANO);
+                mostrarCarta(HUMANO);
             } else if (p instanceof Orco) {
                 boxRaza.setSelectedIndex(ORCO);
+                mostrarCarta(ORCO);
             } else {
                 boxRaza.setSelectedIndex(ELFO);
+                mostrarCarta(ELFO);
             }
             sliderVelocidad.setValue(p.getCaracteristicas().getVelocidad());
             sliderFuerza.setValue(p.getCaracteristicas().getFuerza());
             sliderArmadura.setValue(p.getCaracteristicas().getArmadura());
             sliderDestreza.setValue(p.getCaracteristicas().getDestreza());
-            //TODO: VER COMO CARGAR LA IMAGEN...
+
         }
     }
+
+    private void mostrarCarta(int raza){
+        String rutaImagen;
+        if (raza==HUMANO){
+            rutaImagen = "TupperBattle/images/humano.jpg";
+        }else if(raza==ORCO){
+            rutaImagen = "TupperBattle/images/orco.jpg";
+        }else{//ELFO
+            rutaImagen = "TupperBattle/images/elfo.jpg";
+        }
+        File file = new File(rutaImagen);
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Image image = bufferedImage.getScaledInstance(200, 250, Image.SCALE_DEFAULT);
+        ImageIcon imageIcon = new ImageIcon(image);
+        imagenLabel = new JLabel(imageIcon);//240 x
+        imagenLabel.setBounds(0,0,200,250);
+        panelCarta.add(imagenLabel);
+        //todo: dividir en dos metodos, uno para cargar las imagenes y otros para hacerla visible. ESTE DEBERIA HACERLA VISIBLE.
+    }
+
 }

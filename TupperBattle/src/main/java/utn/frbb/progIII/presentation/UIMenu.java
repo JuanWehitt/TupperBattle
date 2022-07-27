@@ -12,7 +12,7 @@ import java.io.IOException;
 public class UIMenu extends javax.swing.JFrame{
 
     public static final int ANCHOBOTON = 200;
-    JFrame frame;
+    static JFrame frame;
     public static UIGeneratingCharacter windowGeneratingCharacter;
     public static UIPartida windowPartida;
     public static JPanel panelMenu;
@@ -86,6 +86,10 @@ public class UIMenu extends javax.swing.JFrame{
         //frame.add(buttonNuevoJuego);
         frame.add(panelLogo);
         return frame;
+    }
+
+    public static  void repintar(){
+        frame.repaint();
     }
 
     public static void visible(boolean val){

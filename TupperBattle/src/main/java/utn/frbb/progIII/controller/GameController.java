@@ -13,6 +13,9 @@ public class GameController {
     public static final int CANTIDADDEATAQUESPORJUGADOR = 7;
     public static final int LADODERECHO = 1;
     public static final int LADODIZQUIERDO = 0;
+    public static final String PATHIMAGENHUMANO = "TupperBattle/images/humano.jpg";
+    public static final String PATHIMAGENORCO = "TupperBattle/images/orco.jpg";
+    public static final String PATHIMAGENELFO = "TupperBattle/images/elfo.jpg";
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
     private static Partida partidaActual;
@@ -26,12 +29,13 @@ public class GameController {
     }
 
     public static void iniciarJuego(){
-        partidaActual = listaDePartidas.get(nroPartida-1);
+        //partidaActual = listaDePartidas.get(nroPartida-1);
         //repartir los presonajes (cartas) mostrar carteles
 
         if(partidaActual.getNroDeRonda()==1) {
             repartirLosPersonajes();
             partidaActual.setJugadorDeTurno(sortearJugador());
+
         }else{
             partidaActual.setJugadorDeTurno(partidaActual.getPerdedorDeRonda(partidaActual.getNroDeRonda()-1));
         }
@@ -60,8 +64,8 @@ public class GameController {
         int jugador;
         int personajesEnJugador1 = 0;
         int personajesEnJugador2 = 0;
-        Jugador j1 = listaDePartidas.get(nroPartida-1).getJugador1();
-        Jugador j2 = listaDePartidas.get(nroPartida-1).getJugador2();
+        Jugador j1 = partidaActual.getJugador1();
+        Jugador j2 = partidaActual.getJugador2();
         for (int i = 0; i<CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
             jugador = (int)(Math.random() * 2) + 1; //1 o 2
             if (jugador == 1){
@@ -97,6 +101,7 @@ public class GameController {
         Jugador j2 = p.getJugador2();
         j2.setNombre(nombreJugador2);
         nroPartida = listaDePartidas.size();
+        partidaActual = p;
     }
 
     public static Jugador getJugador(int nro, int partida){
@@ -138,6 +143,10 @@ public class GameController {
         return partidaActual.getNroDeRonda();
     }
 
+    public static Jugador getPerdedorDeRonda(){
+        return partidaActual.getPerdedorDeRonda(partidaActual.getNroDeRonda());
+    }
+
     public static Jugador getGanadorDeRonda(){
         //Partida partida = listaDePartidas.get(nroPartida-1);
         return partidaActual.getGanadorDeRonda(partidaActual.getNroDeRonda());
@@ -155,20 +164,22 @@ public class GameController {
 
     public static boolean esFinDeLaPartida() {
         Partida partida = listaDePartidas.get(nroPartida-1);
-        Jugador jugador1 = partida.getJugador2();
+        Jugador jugador1 = partida.getJugador1();
         Jugador jugador2 = partida.getJugador2();
         return (jugador1.cantidadDePersonajesVivos()==0 || jugador2.cantidadDePersonajesVivos()==0);
     }
 
     public static void finalizarPartida() {
         Partida partida = listaDePartidas.get(nroPartida-1);
-        Jugador jugador1 = partida.getJugador2();
+        Jugador jugador1 = partida.getJugador1();
         Jugador jugador2 = partida.getJugador2();
         if (jugador1.cantidadDePersonajesVivos()==0){
             partida.setJugadorGanador(jugador2);
         }else{
             partida.setJugadorGanador(jugador1);
         }
+        jugador1.revivirPersonajes();
+        jugador2.revivirPersonajes();
 
     }
 
@@ -191,12 +202,6 @@ public class GameController {
         Jugador jugadorGanador,jugadorPerdedor;
         Personaje personajeJ1 = partida.getJugador1().getPersonajeEnRonda();
         Personaje personajeJ2 = partida.getJugador2().getPersonajeEnRonda();
-
-        //si el personaje en espera murio..
-        // seteo jugador ganador
-        // seteo jugador perdedor
-        //si la ronda termino por numero de ataques
-
 
         if (personajeJ1.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1 && personajeJ2.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1){
             if (personajeJ1.getSalud()<=personajeJ2.getSalud()){
