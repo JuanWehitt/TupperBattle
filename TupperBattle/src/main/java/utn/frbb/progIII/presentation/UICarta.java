@@ -17,7 +17,7 @@ public class UICarta extends JPanel {
     private Jugador jugador;
     private Personaje personaje;
     private int lado;//0 es izquierda 1 es derecha
-    private boolean eliminado;
+    private boolean eliminado=false;
     private int numero;
     private JLabel imagenLabel;
 
@@ -54,6 +54,7 @@ public class UICarta extends JPanel {
 
     public void setEliminado(boolean eliminado) {
         this.eliminado = eliminado;
+        imagenLabel.setOpaque(eliminado);
     }
 
     public int getNumero() {
@@ -65,6 +66,7 @@ public class UICarta extends JPanel {
     }
 
     public void crearImagenCarta()  {
+        //System.out.println(" en crear imagen carta : "+personaje.getApodo()+" "+personaje.getImagen());
         File file = new File(this.personaje.getImagen());
         BufferedImage bufferedImage = null;
         try {
@@ -72,10 +74,14 @@ public class UICarta extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ImageIcon imageIcon = new ImageIcon(bufferedImage);
+        Image image = bufferedImage.getScaledInstance(110, 160, Image.SCALE_DEFAULT);
+        ImageIcon imageIcon = new ImageIcon(image);
         imagenLabel = new JLabel(imageIcon);//240 x
-        imagenLabel.setBounds(0,0,this.getWidth(),this.getHeight());
-        imagenLabel.setBackground(new Color(255, 0, 0));
+        imagenLabel.setBounds(5,5,(this.getWidth()-10),(this.getHeight()-10));
+        imagenLabel.setBackground(new Color(255, 255, 255));
+        //imagenLabel.setOpaque(true);
+        this.setLayout(null);
+        this.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
         this.add(imagenLabel);
     }
 

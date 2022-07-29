@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UIPartida extends JPanel{
@@ -29,7 +30,9 @@ public class UIPartida extends JPanel{
     private JLabel labelJugador2;
     private JLabel labelVidaJugador1;
     private JLabel labelVidaJugador2;
-    private List<UICarta> listaDeCartas;
+    private List<UICarta> listaDeCartasMazo;
+    private List<UICarta> listaDeCartasJ1;
+    private List<UICarta> listaDeCartasJ2;
     private UICaracteristicas caracteristicasIzq, caracteristicasDer;
     private JButton botonAtacar;
     private JPanel panelPartida;
@@ -132,8 +135,19 @@ public class UIPartida extends JPanel{
         labelNroDeAtaqueJugador2.setBorder(BorderFactory.createTitledBorder(line, "ATAQUE", TitledBorder.CENTER, TitledBorder.TOP, null, Color.BLUE));
         panelPartida.add(labelNroDeAtaqueJugador2);
 
-
-        imprimirCartas(panelPartida);
+        caracteristicasDer = new UICaracteristicas();
+        caracteristicasIzq = new UICaracteristicas();
+        caracteristicasDer.setLayout(null);
+        caracteristicasIzq.setLayout(null);
+        caracteristicasIzq.setBounds(0,0,400,500);
+        caracteristicasDer.setBounds(400,0,400,500);
+        caracteristicasIzq.crearComponentesUICaracteristicas();
+        caracteristicasDer.crearComponentesUICaracteristicas();
+        caracteristicasDer.setBackground(new Color(0,0,0,0));
+        caracteristicasIzq.setBackground(new Color(0,0,0,0));
+        panelPartida.add(caracteristicasDer);
+        panelPartida.add(caracteristicasIzq);
+        //imprimirCartas(panelPartida);
 
         frame.add(panelPartida);
 
@@ -163,6 +177,11 @@ public class UIPartida extends JPanel{
             JOptionPane.showMessageDialog(null,
                     "Ganó "+jGanador.getNombre()+ " con "+pGanador.getNombre(),
                     "Fin de la ronda", JOptionPane.INFORMATION_MESSAGE);
+            if (oponente.getPersonajeEnRonda().isMuerto()){
+                JOptionPane.showMessageDialog(null,
+                        oponente.getNombre()+ "... tu personaje el "+oponente.getPersonajeEnRonda().getApodo()+" murio.",
+                        "Se murio", JOptionPane.INFORMATION_MESSAGE);
+            }
             labelLog.setText(jGanador.getNombre()+" gano con el personaje "+pGanador.getNombre()+" y gano "+GameController.VIDAEXTRAALGANAR +" de vida");
             if (GameController.esFinDeLaPartida()) {
                 GameController.finalizarPartida();
@@ -172,7 +191,7 @@ public class UIPartida extends JPanel{
                         "Fin de la Partida", JOptionPane.INFORMATION_MESSAGE);
                 labelLog.setText("GANO "+GameController.getGanadorDePartida().getNombre().toUpperCase()+ " !!!");
                 int respuest = JOptionPane.showConfirmDialog(panelPartida,
-                        "Jugamos de nuevo? Se repartiran los personajes de nuevo.",
+                        "Jugamos otra? Se repartiran los personajes de nuevo.",
                         "Juguemos", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (respuest==JOptionPane.YES_OPTION){
                     registroJugadores();
@@ -219,42 +238,34 @@ public class UIPartida extends JPanel{
         UIMenu.repintar();
     }
 
-    public void imprimirCartas(JPanel panel){
-        listaDeCartas = new ArrayList<UICarta>();
-        //TODO: VER Panel con capas (jLayeredPane):  un contenedor que permite a sus componentes especificar su profundidad y superpponerse uno al otro cuando se necesite.
-        for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
-            UICarta carta;
-            listaDeCartas.add(0,new UICarta());
-            carta = listaDeCartas.get(0);
-            if(i<=3) {
-                carta.setBounds(160-(i*20),185-(i*20),120,170);
-                carta.setLado(GameController.LADODIZQUIERDO);
-                carta.setNumero(i);
+    private void repartirLasCartas() {
+        listaDeCartasJ1 = new ArrayList<>(GameController.CANTIDADDEPERSONAJESPORJUGADOR);
+        listaDeCartasJ2 = new ArrayList<>(GameController.CANTIDADDEPERSONAJESPORJUGADOR);
+        for (UICarta carta : listaDeCartasMazo) {
+            if (jugador1.tieneAlPersonaje(carta.getPersonaje())) {
+                listaDeCartasJ1.add(carta);
+                carta.setLado(GameController.LADOIZQUIERDO);
+                carta.setJugador(jugador1);
             }else{
-                carta.setBounds(520+((i-3)*20),185-((i-3)*20),120,170);
+                listaDeCartasJ2.add(carta);
                 carta.setLado(GameController.LADODERECHO);
-                carta.setNumero(i-3);
+                carta.setJugador(jugador2);
             }
-            carta.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
-            carta.setEliminado(false);
+        }
+    }
+
+    public void crearMazoDeCartas(){
+        listaDeCartasMazo = new ArrayList<>(GameController.CANTIDADDEPERSONAJESPORJUGADOR*2);
+        UICarta carta;
+        for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
+            listaDeCartasMazo.add(new UICarta());
+            carta = listaDeCartasMazo.get(listaDeCartasMazo.size()-1);
+            carta.setNumero(i);
+            carta.setPersonaje(GameController.obtenerPersonaje(i));
             carta.setLayout(null);
-
-            panel.add(carta);
-            caracteristicasDer = new UICaracteristicas();
-            caracteristicasIzq = new UICaracteristicas();
-            caracteristicasDer.setLayout(null);
-            caracteristicasIzq.setLayout(null);
-            caracteristicasIzq.setBounds(0,0,400,500);
-            caracteristicasDer.setBounds(400,0,400,500);
-            caracteristicasIzq.crearComponentesUICaracteristicas();
-            caracteristicasDer.crearComponentesUICaracteristicas();
-
-            caracteristicasDer.setBackground(new Color(0,0,0,0));
-            caracteristicasIzq.setBackground(new Color(0,0,0,0));
-            //caracteristicasDer.setBorder(new LineBorder(Color.BLUE,3));
-            //caracteristicasIzq.setBorder(new LineBorder(Color.BLUE,3));
-            panel.add(caracteristicasDer);
-            panel.add(caracteristicasIzq);
+            carta.setBounds(0,0,120,170);
+            carta.crearImagenCarta();
+            panelPartida.add(carta);
         }
     }
 
@@ -277,6 +288,7 @@ public class UIPartida extends JPanel{
     }
 
     public void cargarDatosJuego(){
+
         //trae del game controler los datos como nombres de jugadores, inicia las vidas..
         jugador1 = GameController.getJugador(1,GameController.getNroPartida());
 
@@ -289,28 +301,13 @@ public class UIPartida extends JPanel{
         barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
         labelVidaJugador2.setText(Integer.toString(jugador2.getPersonajeEnRonda().getSalud()));
 
-        UICarta carta;
-
-        for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR; i++){
-            carta = listaDeCartas.get(i-1);
-            carta.setJugador(jugador1);
-            carta.setPersonaje(jugador1.getPersonaje(i-1));
-            carta.crearImagenCarta();
-            if (carta.isEliminado()){
-
-            };
-        }
-        for (int i=4; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR; i++){
-            carta = listaDeCartas.get(i-1);
-            carta.setJugador(jugador2);
-            carta.setPersonaje(jugador2.getPersonaje(i-1));
-            carta.crearImagenCarta();
-        }
+        repartirLasCartas();
+        posicionarCartasDeJugador();
 
         caracteristicasIzq.setCaracteristicas(jugador1.getPersonajeEnRonda());
         caracteristicasDer.setCaracteristicas(jugador2.getPersonajeEnRonda());
         caracteristicasDer.ubicarCaracteristicas(GameController.LADODERECHO);
-        caracteristicasIzq.ubicarCaracteristicas(GameController.LADODIZQUIERDO);
+        caracteristicasIzq.ubicarCaracteristicas(GameController.LADOIZQUIERDO);
         if(GameController.getJugadorDeTurno()==jugador1){
             botonAtacar.setBounds(250, 230, 120,30);
             botonAtacar.setText("Atacarr!! >>>");
@@ -324,9 +321,53 @@ public class UIPartida extends JPanel{
         labelLog.setText("Juegan "+GameController.getJugadorDeTurno().getPersonajeEnRonda().getApodo()+
                 " contra "+GameController.getJugadorEnEspera().getPersonajeEnRonda().getApodo()+
                 ". Comienza "+GameController.getJugadorDeTurno().getNombre());
+
     }
-    //TODO: MOSTRAR LA CARTA QUE JUGARA AL FRENTE
-    //TODO: SETEAR POSICIONES DE CARTAS..
+
+
+
+    private void ordenarLista(List<UICarta> listaAordenar, List<UICarta> lista) {
+        for (UICarta cartaa : listaAordenar) {
+            if (cartaa.getPersonaje() == cartaa.getJugador().getPersonajeEnRonda()) {
+                lista.add(cartaa);
+            }
+        }
+        for (UICarta cartaa : listaAordenar) {
+            if (!cartaa.getPersonaje().isMuerto() && cartaa.getPersonaje() != cartaa.getJugador().getPersonajeEnRonda()) {
+                lista.add(cartaa);
+            }
+        }
+        for (UICarta cartaa : listaAordenar) {
+            if (cartaa.getPersonaje().isMuerto()) {
+                lista.add(cartaa);
+            }
+        }
+    }
+
+    private void posicionarCartasDeJugador() {
+        List<UICarta> listaOrdenadaj1 = new ArrayList<>();
+        List<UICarta> listaOrdenadaj2 = new ArrayList<>();
+        ordenarLista(listaDeCartasJ1,listaOrdenadaj1);
+        ordenarLista(listaDeCartasJ2,listaOrdenadaj2);
+        listaDeCartasJ1 = listaOrdenadaj1;
+        listaDeCartasJ2 = listaOrdenadaj2;
+
+        int i = 1;
+        for (UICarta carta1 : listaDeCartasJ1){
+            carta1.setBounds(160 - (i*20), 185 - (i*20), 120, 170);
+            Container parent = carta1.getParent();
+            parent.setComponentZOrder(carta1,i);
+            i++;
+        }
+        i = 1;
+        for (UICarta carta2 : listaDeCartasJ2){
+            carta2.setBounds(520+(i*20),185-(i*20),120,170);
+            Container parent = carta2.getParent();
+            parent.setComponentZOrder(carta2,i);
+            i++;
+        }
+
+    }
 
 
 }

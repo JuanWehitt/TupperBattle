@@ -68,4 +68,8 @@ public class Jugador {
             personaje.setSalud(100);
         }
     }
+
+    public boolean tieneAlPersonaje(Personaje personaje) {
+        return listaPersonajes.contains(personaje);
+    }
 }

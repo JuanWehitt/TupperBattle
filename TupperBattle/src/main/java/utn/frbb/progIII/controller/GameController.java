@@ -12,15 +12,14 @@ public class GameController {
     public static final int CANTIDADDEPERSONAJESPORJUGADOR = 3;
     public static final int CANTIDADDEATAQUESPORJUGADOR = 7;
     public static final int LADODERECHO = 1;
-    public static final int LADODIZQUIERDO = 0;
+    public static final int LADOIZQUIERDO = 0;
     public static final String PATHIMAGENHUMANO = "TupperBattle/images/humano.jpg";
     public static final String PATHIMAGENORCO = "TupperBattle/images/orco.jpg";
     public static final String PATHIMAGENELFO = "TupperBattle/images/elfo.jpg";
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
     private static Partida partidaActual;
-    //private static Jugador jugadorGanador;
-    //private static Jugador jugadorPerdedor;
+
 
     private static List<Personaje> listaPersonajes = new ArrayList<>(CANTIDADDEPERSONAJESPORJUGADOR*2);
 
@@ -29,29 +28,16 @@ public class GameController {
     }
 
     public static void iniciarJuego(){
-        //partidaActual = listaDePartidas.get(nroPartida-1);
         //repartir los presonajes (cartas) mostrar carteles
-
+        repartirLosPersonajes();
         if(partidaActual.getNroDeRonda()==1) {
-            repartirLosPersonajes();
             partidaActual.setJugadorDeTurno(sortearJugador());
-
         }else{
             partidaActual.setJugadorDeTurno(partidaActual.getPerdedorDeRonda(partidaActual.getNroDeRonda()-1));
         }
         partidaActual.getJugadorDeTurno().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorDeTurno()));
         partidaActual.getJugadorEnEspera().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorEnEspera()));
         setNroAtaques(1);
-
-
-        //crear la Partida
-        //comenzar el juego iniciando la ronda 1
-        //bucle de rondas
-        ////Elegir al azar el personaje del jugador 1.
-        ////Elegir al azar el personaje del jugador 2.
-        ////Sortear jugador que comienza solo en ronda 1, sino el perdedor de la ronda anterior.
-        ////Ataca el jugador sorteado el otro jugador
-        ////
     }
 
     public static int getNroPartida() {
@@ -202,7 +188,8 @@ public class GameController {
         Jugador jugadorGanador,jugadorPerdedor;
         Personaje personajeJ1 = partida.getJugador1().getPersonajeEnRonda();
         Personaje personajeJ2 = partida.getJugador2().getPersonajeEnRonda();
-
+        personajeJ2.setEnRonda(false);
+        personajeJ1.setEnRonda(false);
         if (personajeJ1.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1 && personajeJ2.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1){
             if (personajeJ1.getSalud()<=personajeJ2.getSalud()){
                 jugadorGanador = partida.getJugador2();
@@ -294,6 +281,7 @@ public class GameController {
                 p = jugador.getPersonaje(nroPersonajeSorteado);
             }
             jugador.setPersonajeEnRonda(p);
+            jugador.getPersonajeEnRonda().setEnRonda(true);
             System.out.println("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo());
             return p;
         }else{

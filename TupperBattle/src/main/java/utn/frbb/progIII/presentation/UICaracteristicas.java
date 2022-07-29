@@ -52,7 +52,7 @@ public class UICaracteristicas extends JPanel{
     }
 
     public void ubicarCaracteristicas(int lado){
-        if (lado == GameController.LADODIZQUIERDO){
+        if (lado == GameController.LADOIZQUIERDO){
             labelVelocidad.setBounds(10,290,80,50);
             labelDestreza.setBounds(30,350,80,50);
             labelFuerza.setBounds(100,410,80,50);

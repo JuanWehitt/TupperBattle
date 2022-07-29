@@ -14,7 +14,7 @@ public abstract class Personaje {
     private String imagen;
     private CaracteristicasPersonaje caracteristicas;
     private boolean muerto;
-
+    private boolean enRonda;
 
 
     private int ataqueNro = 1;
@@ -32,6 +32,7 @@ public abstract class Personaje {
         this.salud = salud;
         this.caracteristicas = new CaracteristicasPersonaje();
         this.muerto = false;
+        this.enRonda = false;
     }
 
     public int getAtaqueNro() {
@@ -122,4 +123,11 @@ public abstract class Personaje {
         return caracteristicas;
     }
 
+    public boolean isEnRonda() {
+        return enRonda;
+    }
+
+    public void setEnRonda(boolean enRonda) {
+        this.enRonda = enRonda;
+    }
 }

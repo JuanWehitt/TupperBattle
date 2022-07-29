@@ -36,8 +36,12 @@ public class UIGeneratingCharacter extends JPanel {
     private JButton botonSiguiente;
     private JButton botonAnterior;
     private JLabel labelNroPersonaje;
-    private JLabel imagenLabel;
+
     private JPanel panelCarta;
+
+    private JLabel imagenLabelHumano;
+    private JLabel imagenLabelOrco;
+    private JLabel imagenLabelElfo;
 
     public void setVisible(boolean val){
         panelGeneratingCharacter.setVisible(val);
@@ -60,6 +64,7 @@ public class UIGeneratingCharacter extends JPanel {
         panelCarta.setBounds(10,60,200,250);
         panelCarta.setBackground(new Color(33, 40, 79));
         panelCarta.setLayout(null);
+        cargarImagenesDeCarta();
         mostrarCarta(HUMANO);
         panelGeneratingCharacter.add(panelCarta);
 
@@ -179,15 +184,13 @@ public class UIGeneratingCharacter extends JPanel {
         sliderArmadura.setBackground(new Color(110, 133, 201));
         panelGeneratingCharacter.add(sliderArmadura);
 
-        //TODO: Barra progessbar vertical indicando restante de puntos para utilizar en las caracteristicas.
-
         labelNroPersonaje = new JLabel();
         labelNroPersonaje.setBounds(284,327,50,20);
         labelNroPersonaje.setFont(new Font("Arial", Font.BOLD, 12));
         labelNroPersonaje.setText(nroPersonaje + " de " + CANTIDADPERSONAJES);
         panelGeneratingCharacter.add(labelNroPersonaje);
 
-        JButton botonAnterior = new JButton("Anterior");
+        botonAnterior = new JButton("Anterior");
         botonAnterior.setBounds(panelGeneratingCharacter.getWidth()/2-ANCHOBOTON-5,350,ANCHOBOTON,45);
         botonAnterior.addActionListener(new ActionListener(){
             @Override
@@ -302,6 +305,7 @@ public class UIGeneratingCharacter extends JPanel {
                     panelGeneratingCharacter.setVisible(false);
                     UIMenu.windowPartida.registroJugadores();
                     GameController.iniciarJuego();
+                    UIMenu.windowPartida.crearMazoDeCartas();
                     UIMenu.windowPartida.cargarDatosJuego();
                     UIMenu.windowPartida.setVisible(true);
                 }
@@ -357,28 +361,66 @@ public class UIGeneratingCharacter extends JPanel {
         }
     }
 
-    private void mostrarCarta(int raza){
-        String rutaImagen;
-        if (raza==HUMANO){
-            rutaImagen = "TupperBattle/images/humano.jpg";
-        }else if(raza==ORCO){
-            rutaImagen = "TupperBattle/images/orco.jpg";
-        }else{//ELFO
-            rutaImagen = "TupperBattle/images/elfo.jpg";
-        }
-        File file = new File(rutaImagen);
+    private void cargarImagenesDeCarta(){
+        String rutaImagen = "TupperBattle/images/humano.jpg";
+        File fileHumano = new File(rutaImagen);
         BufferedImage bufferedImage = null;
         try {
-            bufferedImage = ImageIO.read(file);
+            bufferedImage = ImageIO.read(fileHumano);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Image image = bufferedImage.getScaledInstance(200, 250, Image.SCALE_DEFAULT);
-        ImageIcon imageIcon = new ImageIcon(image);
-        imagenLabel = new JLabel(imageIcon);//240 x
-        imagenLabel.setBounds(0,0,200,250);
-        panelCarta.add(imagenLabel);
-        //todo: dividir en dos metodos, uno para cargar las imagenes y otros para hacerla visible. ESTE DEBERIA HACERLA VISIBLE.
+        Image imageHumano = bufferedImage.getScaledInstance(200, 250, Image.SCALE_DEFAULT);
+        ImageIcon imageIconHumano = new ImageIcon(imageHumano);
+        imagenLabelHumano = new JLabel(imageIconHumano);//240 x
+        imagenLabelHumano.setBounds(0,0,200,250);
+        panelCarta.add(imagenLabelHumano);
+
+        rutaImagen = "TupperBattle/images/orco.jpg";
+        File fileOrco = new File(rutaImagen);
+        bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(fileOrco);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Image imageOrco = bufferedImage.getScaledInstance(200, 250, Image.SCALE_DEFAULT);
+        ImageIcon imageIconOrco = new ImageIcon(imageOrco);
+        imagenLabelOrco = new JLabel(imageIconOrco);//240 x
+        imagenLabelOrco.setBounds(0,0,200,250);
+        panelCarta.add(imagenLabelOrco);
+
+        rutaImagen = "TupperBattle/images/elfo.jpg";
+        File fileElfo = new File(rutaImagen);
+        bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(fileElfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Image imageElfo = bufferedImage.getScaledInstance(200, 250, Image.SCALE_DEFAULT);
+        ImageIcon imageIconElfo= new ImageIcon(imageElfo);
+        imagenLabelElfo = new JLabel(imageIconElfo);//240 x
+        imagenLabelElfo.setBounds(0,0,200,250);
+        panelCarta.add(imagenLabelElfo);
+
+    }
+
+    private void mostrarCarta(int raza) {
+        String rutaImagen;
+        if (raza==HUMANO){
+            imagenLabelHumano.setVisible(true);
+            imagenLabelOrco.setVisible(false);
+            imagenLabelElfo.setVisible(false);
+        }else if(raza==ORCO){
+            imagenLabelHumano.setVisible(false);
+            imagenLabelOrco.setVisible(true);
+            imagenLabelElfo.setVisible(false);
+        }else{//ELFO
+            imagenLabelHumano.setVisible(false);
+            imagenLabelOrco.setVisible(false);
+            imagenLabelElfo.setVisible(true);
+        }
     }
 
 }
