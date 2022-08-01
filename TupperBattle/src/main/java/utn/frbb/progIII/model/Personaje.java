@@ -15,6 +15,7 @@ public abstract class Personaje {
     private CaracteristicasPersonaje caracteristicas;
     private boolean muerto;
     private boolean enRonda;
+    private String nombreDeLaRaza;
 
 
     private int ataqueNro = 1;
@@ -33,6 +34,13 @@ public abstract class Personaje {
         this.caracteristicas = new CaracteristicasPersonaje();
         this.muerto = false;
         this.enRonda = false;
+        if(this instanceof Humano){
+            nombreDeLaRaza = "Humano";
+        }else if (this instanceof Orco){
+            nombreDeLaRaza = "Orco";
+        }else{
+            nombreDeLaRaza = "Elfo";
+        }
     }
 
     public int getAtaqueNro() {
@@ -129,5 +137,13 @@ public abstract class Personaje {
 
     public void setEnRonda(boolean enRonda) {
         this.enRonda = enRonda;
+    }
+
+    public String getNombreDeLaRaza() {
+        return nombreDeLaRaza;
+    }
+
+    public void setNombreDeLaRaza(String nombreDeLaRaza) {
+        this.nombreDeLaRaza = nombreDeLaRaza;
     }
 }

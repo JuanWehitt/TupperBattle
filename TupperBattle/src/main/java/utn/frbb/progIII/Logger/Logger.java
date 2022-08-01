@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Logger {
 
     private static final String PATHLOGGER = "TupperBattle/Logger/log.log";
-    public static void logearRegistro(String reg) throws IOException {
+    public static void logearRegistro(String reg){
 
         System.out.println(reg);
         try {

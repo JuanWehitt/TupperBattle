@@ -171,8 +171,8 @@ public class UIPartida extends JPanel{
             jPerdedor = GameController.getPerdedorDeRonda();
             pGanador = jGanador.getPersonajeEnRonda();
             pPerdedor = jPerdedor.getPersonajeEnRonda();
-            System.out.println("Finalizo la ronda, gano "+jGanador.getNombre()+ " con "+pGanador.getNombre());
-            System.out.println("");
+            //System.out.println("Finalizo la ronda, gano "+jGanador.getNombre()+ " con "+pGanador.getNombre());
+
 
             JOptionPane.showMessageDialog(null,
                     "Ganó "+jGanador.getNombre()+ " con "+pGanador.getNombre(),
@@ -195,6 +195,8 @@ public class UIPartida extends JPanel{
                         "Juguemos", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (respuest==JOptionPane.YES_OPTION){
                     registroJugadores();
+                    JOptionPane.showMessageDialog(null, "Se repartiran las cartas y se sorteará quien comienza",
+                            "Repartija", JOptionPane.INFORMATION_MESSAGE);
                     GameController.iniciarJuego();
                     cargarDatosJuego();
                 }else{
@@ -281,8 +283,6 @@ public class UIPartida extends JPanel{
                 UIMenu.windowGeneratingCharacter.setVisible(true);
             } else {
                 GameController.crearPartida(nombre1,nombre2);
-                JOptionPane.showMessageDialog(null, "Se repartiran las cartas",
-                        "Repartija", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

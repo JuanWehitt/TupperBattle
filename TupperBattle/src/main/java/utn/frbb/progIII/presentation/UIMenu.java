@@ -1,5 +1,7 @@
 package utn.frbb.progIII.presentation;
 
+import utn.frbb.progIII.controller.GameController;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -61,6 +63,21 @@ public class UIMenu extends javax.swing.JFrame{
         buttonNuevoJuego.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,20,ANCHOBOTON,30);
         buttonNuevoJuego.setBackground(Color.WHITE);
         panelMenu.add(buttonNuevoJuego);
+        buttonNuevoJuego.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                panelMenu.setVisible(false);
+                UIMenu.windowPartida.registroJugadores();
+                JOptionPane.showMessageDialog(null, "Se repartiran las cartas y se sorteará quien comienza",
+                        "Repartija", JOptionPane.INFORMATION_MESSAGE);
+                GameController.crearPersonajesAleatorio();
+                GameController.iniciarJuego();
+
+                UIMenu.windowPartida.crearMazoDeCartas();
+                UIMenu.windowPartida.cargarDatosJuego();
+                UIMenu.windowPartida.setVisible(true);
+            }
+        });
 
         JButton buttonCrearPersonajes = new JButton("Crear Personajes");
         buttonCrearPersonajes.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,60,ANCHOBOTON,30);

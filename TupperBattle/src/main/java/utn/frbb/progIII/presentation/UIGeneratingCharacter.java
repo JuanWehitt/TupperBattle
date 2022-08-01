@@ -304,6 +304,8 @@ public class UIGeneratingCharacter extends JPanel {
 
                     panelGeneratingCharacter.setVisible(false);
                     UIMenu.windowPartida.registroJugadores();
+                    JOptionPane.showMessageDialog(null, "Se repartiran las cartas y se sorteará quien comienza",
+                            "Repartija", JOptionPane.INFORMATION_MESSAGE);
                     GameController.iniciarJuego();
                     UIMenu.windowPartida.crearMazoDeCartas();
                     UIMenu.windowPartida.cargarDatosJuego();

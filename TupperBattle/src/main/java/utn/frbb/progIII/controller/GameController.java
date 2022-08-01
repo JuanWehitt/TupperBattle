@@ -1,9 +1,12 @@
 package utn.frbb.progIII.controller;
 
+import utn.frbb.progIII.Logger.Logger;
 import utn.frbb.progIII.model.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class GameController {
 
@@ -19,18 +22,20 @@ public class GameController {
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
     private static Partida partidaActual;
-
+    private static List<String> listaDeNombres = Arrays.asList("Santiago","Sebastián","Diego","Nicolás","Samuel","Alejandro","Daniel","Mateo","Ángel","Matías","Gabriel","Tomás","David","Emiliano","Andrés","Joaquín","Carlos","Alexander","Adrián","Lucas","Benjamín","Leonardo","Rodrigo","Felipe","Francisco","Pablo","Martín","Fernando","Isaac","Manuel","JuanPablo","Emmanuel","Emilio","Vicente","Eduardo","Juan","Javier","Jorge","Aaron","José","Erick","Luis","Cristian","Ignacio","Christopher","Jesús","Kevin","JuanJosé","Agustín","JuanDavid","Simón","Joshua","Maximiliano","MiguelÁngel","JuanSebastián","Bruno","Iván","Gael","Miguel","Thiago","Jerónimo","Hugo","Ricardo","Antonio","Ian","Anthony","Pedro","Rafael","Jonathan","Esteban","JuanManuel","Julián","Mauricio","Oscar","Santino","Axel","Sergio","Guillermo","Matthew","Valentín","Bautista","Álvaro","Dylan","Marcos","Kimberly","Luciano","Mario","César","Cristóbal","Luca","Iker","Juan","Andrés","Gonzalo","Roberto","Valentino","Facundo","Patricio","Diego","Alejandro","Josué","Franco");
+    private static List<String> listaNombresPersonajes = new ArrayList<>();
 
     private static List<Personaje> listaPersonajes = new ArrayList<>(CANTIDADDEPERSONAJESPORJUGADOR*2);
+    private static List<Personaje> listaPersonajesAleatorio;
 
     public static int personajesPorJugador() {
         return CANTIDADDEPERSONAJESPORJUGADOR;
     }
 
     public static void iniciarJuego(){
-        //repartir los presonajes (cartas) mostrar carteles
-        repartirLosPersonajes();
+        //repartir los presonajes (cartas)
         if(partidaActual.getNroDeRonda()==1) {
+            repartirLosPersonajes();
             partidaActual.setJugadorDeTurno(sortearJugador());
         }else{
             partidaActual.setJugadorDeTurno(partidaActual.getPerdedorDeRonda(partidaActual.getNroDeRonda()-1));
@@ -38,6 +43,9 @@ public class GameController {
         partidaActual.getJugadorDeTurno().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorDeTurno()));
         partidaActual.getJugadorEnEspera().setPersonajeEnRonda(sortearPersonajeDeJugador(partidaActual.getJugadorEnEspera()));
         setNroAtaques(1);
+        Logger.logearRegistro("Comienza atacando "+partidaActual.getJugadorDeTurno().getNombre()+
+                " con el "+partidaActual.getJugadorDeTurno().getPersonajeEnRonda().getNombreDeLaRaza()+" "+
+                partidaActual.getJugadorDeTurno().getPersonajeEnRonda().getApodo());
     }
 
     public static int getNroPartida() {
@@ -58,25 +66,79 @@ public class GameController {
                 if (personajesEnJugador1<CANTIDADDEPERSONAJESPORJUGADOR) {
                     j1.agregarPersonaje(listaPersonajes.get(i));
                     personajesEnJugador1++;
+                    Logger.logearRegistro("El personaje "+listaPersonajes.get(i).getNombre()+" es de "+j1.getNombre());
                 }else{
                     j2.agregarPersonaje(listaPersonajes.get(i));
                     personajesEnJugador2++;
+                    Logger.logearRegistro("El personaje "+listaPersonajes.get(i).getNombre()+" es de "+j2.getNombre());
                 }
+
             }else {
                 if (personajesEnJugador2<CANTIDADDEPERSONAJESPORJUGADOR) {
                     j2.agregarPersonaje(listaPersonajes.get(i));
                     personajesEnJugador2++;
+                    Logger.logearRegistro("El personaje "+listaPersonajes.get(i).getNombre()+" es de "+j2.getNombre());
                 }else{
                     j1.agregarPersonaje(listaPersonajes.get(i));
                     personajesEnJugador1++;
+                    Logger.logearRegistro("El personaje "+listaPersonajes.get(i).getNombre()+" es de "+j1.getNombre());
                 }
+
             }
+
         }
+
 
     }
 
-    public static void crearPersonajesAleatorio(){
+    private static String generarNombreAleatorio(){
+        String nombre = "ju";
+        Random aleatorio = new Random(System.currentTimeMillis());
+        int intAleatorio;
+        intAleatorio = aleatorio.nextInt(99);
+        nombre = listaDeNombres.get(intAleatorio);
+        while (listaNombresPersonajes.contains(nombre)) {
+            intAleatorio = aleatorio.nextInt(99);
+            nombre = listaDeNombres.get(intAleatorio);
+            //System.out.println("nombre: "+nombre);
+        }
+        listaNombresPersonajes.add(nombre);
+        //System.out.println(listaNombresPersonajes.get(listaNombresPersonajes.size()-1));
+        return nombre;
+    }
 
+    public static void crearPersonajesAleatorio(){
+        listaPersonajes = new ArrayList<>(CANTIDADDEPERSONAJESPORJUGADOR*2);
+        String nombreAleatorio;
+        for (int i = 1; i<=CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
+            Random aleatorio = new Random(System.currentTimeMillis());
+            int randRaza = aleatorio.nextInt(30);
+            int randAnio = aleatorio.nextInt(100)+1900;
+            CaracteristicasPersonaje caracteristicasPersonaje = new CaracteristicasPersonaje(
+                    aleatorio.nextInt(9)+1,
+                    aleatorio.nextInt(4)+1,
+                    aleatorio.nextInt(9)+1,
+                    aleatorio.nextInt(9)+1,
+                    1);
+            nombreAleatorio = generarNombreAleatorio();
+            if (randRaza<=10) {
+                listaPersonajes.add(new Humano(nombreAleatorio, nombreAleatorio.substring(0, 4), "10,10," + randAnio, 100));
+                Humano humano = (Humano) listaPersonajes.get(listaPersonajes.size() - 1);
+                humano.setImagen(GameController.PATHIMAGENHUMANO);
+                GameController.agregarPersonaje(i, humano, caracteristicasPersonaje);
+            }else if (randRaza<=20) {
+                listaPersonajes.add(new Orco(nombreAleatorio, nombreAleatorio.substring(0, 4), "10,10," + randAnio, 100));
+                Orco orco = (Orco) listaPersonajes.get(listaPersonajes.size() - 1);
+                orco.setImagen(GameController.PATHIMAGENORCO);
+                GameController.agregarPersonaje(i, orco, caracteristicasPersonaje);
+            }else {
+                listaPersonajes.add(new Elfo(nombreAleatorio, nombreAleatorio.substring(0, 4), "10,10," + randAnio, 100));
+                Elfo elfo = (Elfo) listaPersonajes.get(listaPersonajes.size() - 1);
+                elfo.setImagen(GameController.PATHIMAGENELFO);
+                GameController.agregarPersonaje(i, elfo, caracteristicasPersonaje);
+            }
+
+        }
     }
 
     public static void crearPartida(String nombreJugador1, String nombreJugador2) {
@@ -88,6 +150,7 @@ public class GameController {
         j2.setNombre(nombreJugador2);
         nroPartida = listaDePartidas.size();
         partidaActual = p;
+        Logger.logearRegistro("Se creó la partida nro "+nroPartida+" con los jugadores: "+j1.getNombre()+" y "+j2.getNombre());
     }
 
     public static Jugador getJugador(int nro, int partida){
@@ -112,7 +175,8 @@ public class GameController {
             Personaje oponente = GameController.getJugadorEnEspera().getPersonajeEnRonda();
             int valor = atacante.probocarDanio(oponente);
             oponente.setSalud(oponente.getSalud()-valor);
-            System.out.println(atacante.getNombre() + " ataco a "+ oponente.getNombre()+ " y le resto "+valor+ " de vida");
+            Logger.logearRegistro(atacante.getNombre() + " atacó a "+ oponente.getNombre()+ " y le resto "+valor+ " de vida");
+            //System.out.println(atacante.getNombre() + " ataco a "+ oponente.getNombre()+ " y le resto "+valor+ " de vida");
             return valor;
     }
 
@@ -123,6 +187,7 @@ public class GameController {
 
     public static void nuevaRonda(){
         partidaActual.nuevaRonda();
+        Logger.logearRegistro("Comenzará la ronda "+partidaActual.getNroDeRonda());
     }
 
     public static int getRonda() {
@@ -166,7 +231,7 @@ public class GameController {
         }
         jugador1.revivirPersonajes();
         jugador2.revivirPersonajes();
-
+        Logger.logearRegistro("Finalizó la partida nro "+nroPartida+ ". Ganó "+partida.getJugadorGanador().getNombre());
     }
 
     public static boolean esFinDeRonda() {
@@ -188,6 +253,7 @@ public class GameController {
         Jugador jugadorGanador,jugadorPerdedor;
         Personaje personajeJ1 = partida.getJugador1().getPersonajeEnRonda();
         Personaje personajeJ2 = partida.getJugador2().getPersonajeEnRonda();
+
         personajeJ2.setEnRonda(false);
         personajeJ1.setEnRonda(false);
         if (personajeJ1.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1 && personajeJ2.getAtaqueNro()==CANTIDADDEATAQUESPORJUGADOR+1){
@@ -207,6 +273,7 @@ public class GameController {
                 jugadorPerdedor = partida.getJugador1();
             }
         }
+        Logger.logearRegistro("Finalizó la ronda, ganó "+jugadorGanador.getNombre()+ " con "+jugadorGanador.getPersonajeEnRonda().getNombre());
         jugadorGanador.getPersonajeEnRonda().setSalud(jugadorGanador.getPersonajeEnRonda().getSalud()+VIDAEXTRAALGANAR);
         jugadorGanador.getPersonajeEnRonda().setAtaqueNro(1);
         jugadorPerdedor.getPersonajeEnRonda().setAtaqueNro(1);
@@ -266,6 +333,13 @@ public class GameController {
         caracteristicasPersonaje1.setFuerza(caracteristicasPersonaje.getFuerza());
         caracteristicasPersonaje1.setVelocidad(caracteristicasPersonaje.getVelocidad());
         //System.out.println(listaPersonajes.size());
+
+        Logger.logearRegistro("Se creo el personaje: "+p.getNombre()+" el "+p.getNombreDeLaRaza().toLowerCase()+" "+p.getApodo()+", nacio el "+p.getFechaNac()+
+                ". Con Velocidad: "+caracteristicasPersonaje.getVelocidad()+
+                ", Destreza: "+ caracteristicasPersonaje.getDestreza()+
+                ", Fuerza: "+caracteristicasPersonaje.getFuerza()+
+                ", Armadura: "+caracteristicasPersonaje.getArmadura()+
+                " y Nivel: "+caracteristicasPersonaje.getNivel());
     }
 
     public static int cantDePersonajesCreados(){
@@ -282,7 +356,8 @@ public class GameController {
             }
             jugador.setPersonajeEnRonda(p);
             jugador.getPersonajeEnRonda().setEnRonda(true);
-            System.out.println("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo());
+            Logger.logearRegistro("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo());
+            //System.out.println("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo());
             return p;
         }else{
             return null;
@@ -292,10 +367,12 @@ public class GameController {
     public static Jugador sortearJugador(){
         int jugador = (int)(Math.random()*2);
         if (jugador == 0){
-            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador1().getNombre() +" para iniciar la ronda.");
+            Logger.logearRegistro("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador1().getNombre() +" para iniciar la ronda.");
+            //System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador1().getNombre() +" para iniciar la ronda.");
             return listaDePartidas.get(nroPartida-1).getJugador1();
         }else{
-            System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador2().getNombre() +" para iniciar la ronda.");
+            Logger.logearRegistro("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador2().getNombre() +" para iniciar la ronda.");
+            //System.out.println("Salio soreteado " + listaDePartidas.get(nroPartida-1).getJugador2().getNombre() +" para iniciar la ronda.");
             return listaDePartidas.get(nroPartida-1).getJugador2();
         }
     }

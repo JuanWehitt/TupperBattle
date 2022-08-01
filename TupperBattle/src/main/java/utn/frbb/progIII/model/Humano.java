@@ -8,10 +8,6 @@ public class Humano extends Personaje{
         super(nombre, apodo, fechaNac, salud);
     }
 
-    public Humano() {
-
-    }
-
     @Override
     public int probocarDanio(Personaje contrincante) {
         //poder de disparo PD: Destreza * Fuerza * Nivel del personaje que ataca
