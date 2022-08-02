@@ -190,6 +190,8 @@ public class UIGeneratingCharacter extends JPanel {
         labelNroPersonaje.setText(nroPersonaje + " de " + CANTIDADPERSONAJES);
         panelGeneratingCharacter.add(labelNroPersonaje);
 
+
+
         botonAnterior = new JButton("Anterior");
         botonAnterior.setBounds(panelGeneratingCharacter.getWidth()/2-ANCHOBOTON-5,350,ANCHOBOTON,45);
         botonAnterior.addActionListener(new ActionListener(){

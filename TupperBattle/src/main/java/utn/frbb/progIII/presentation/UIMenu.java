@@ -89,6 +89,7 @@ public class UIMenu extends javax.swing.JFrame{
             public void actionPerformed(ActionEvent e) {
                 panelMenu.setVisible(false);
                 windowGeneratingCharacter.setVisible(true);
+                windowGeneratingCharacter.mostrarPersonaje(GameController.obtenerPersonaje(1));
                 //UIGeneratingCharacter.showPaneGeneratingCharacter(frame);
             }
 

@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class UIPartida extends JPanel{
 
@@ -39,7 +40,8 @@ public class UIPartida extends JPanel{
     private JLabel labelLog;
     private JLabel labelRonda;
     private JLabel labelNroDeAtaqueJugador1, labelNroDeAtaqueJugador2;
-
+    private JPanel panelDeGanador;
+    private JLabel labelGanador;
 
     public void setVisible(boolean val){
         panelPartida.setVisible(val);
@@ -107,6 +109,7 @@ public class UIPartida extends JPanel{
             }
         });
         panelPartida.add(botonAtacar);
+        panelPartida.setComponentZOrder(botonAtacar,4);
         labelLog = new JLabel("",SwingConstants.CENTER);
         labelLog.setBackground(new Color(0,0,0,0));
         labelLog.setBounds(0,470,800,30);
@@ -148,8 +151,52 @@ public class UIPartida extends JPanel{
         panelPartida.add(caracteristicasDer);
         panelPartida.add(caracteristicasIzq);
         //imprimirCartas(panelPartida);
-
         frame.add(panelPartida);
+
+        panelDeGanador = new JPanel();
+        panelDeGanador.setLayout(null);
+        panelDeGanador.setBounds(frame.getWidth()/2-800/2,100,800,500);
+        panelDeGanador.setBackground(new Color(47, 231, 10));
+        panelDeGanador.setVisible(false);
+
+        JLabel labelTituloGanador = new JLabel("EL GANADOR DEL TRONO DE HIERRO ES");
+        labelTituloGanador.setBounds(165,3,600,48);
+        labelTituloGanador.setFont(new Font("Arial", Font.BOLD, 25));
+        panelDeGanador.add(labelTituloGanador);
+
+        labelGanador = new JLabel("EL GANADOR");
+        labelGanador.setBounds(0,80,800,70);
+        labelGanador.setFont(new Font("Arial", Font.BOLD, 50));
+        labelGanador.setHorizontalAlignment(SwingConstants.CENTER);
+        panelDeGanador.add(labelGanador);
+
+        JButton botonAceptarGanadorDePartida = new JButton("Aceptar");
+        botonAceptarGanadorDePartida.setBounds(350, 450, 100,30);
+        botonAceptarGanadorDePartida.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int respuest = JOptionPane.showConfirmDialog(panelPartida,
+                        "Jugamos otra? Se repartiran los personajes de nuevo.",
+                        "Juguemos", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                panelDeGanador.setVisible(false);
+                reiniciarLasCartas();
+                if (respuest==JOptionPane.YES_OPTION){
+                    registroJugadores();
+                    JOptionPane.showMessageDialog(null, "Se repartiran las cartas y se sorteará quien comienza",
+                            "Repartija", JOptionPane.INFORMATION_MESSAGE);
+                    GameController.iniciarJuego();
+                    cargarDatosJuego();
+                    panelPartida.setVisible(true);
+                }else{
+                    panelPartida.setVisible(false);
+                    UIMenu.visible(true);
+                }
+            }
+        });
+        panelDeGanador.add(botonAceptarGanadorDePartida);
+        frame.add(panelDeGanador);
+        //frame.setComponentZOrder(panelDeGanador,10);
+
 
     }
 
@@ -161,6 +208,7 @@ public class UIPartida extends JPanel{
 
         barraJugador1.setValue(jugador1.getPersonajeEnRonda().getSalud());
         barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
+        actualizarLaCarta(oponente);
         GameController.actualizarNumeroDeAtaques();
 
         if (GameController.esFinDeRonda()){
@@ -181,6 +229,8 @@ public class UIPartida extends JPanel{
                 JOptionPane.showMessageDialog(null,
                         oponente.getNombre()+ "... tu personaje el "+oponente.getPersonajeEnRonda().getApodo()+" murio.",
                         "Se murio", JOptionPane.INFORMATION_MESSAGE);
+                setearMuertaLaCarta(oponente);
+                actualizarLaCarta(atacante);
             }
             labelLog.setText(jGanador.getNombre()+" gano con el personaje "+pGanador.getNombre()+" y gano "+GameController.VIDAEXTRAALGANAR +" de vida");
             if (GameController.esFinDeLaPartida()) {
@@ -190,19 +240,10 @@ public class UIPartida extends JPanel{
                         "GANASTE "+jGanador.getNombre().toUpperCase()+"!!!!",
                         "Fin de la Partida", JOptionPane.INFORMATION_MESSAGE);
                 labelLog.setText("GANO "+GameController.getGanadorDePartida().getNombre().toUpperCase()+ " !!!");
-                int respuest = JOptionPane.showConfirmDialog(panelPartida,
-                        "Jugamos otra? Se repartiran los personajes de nuevo.",
-                        "Juguemos", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if (respuest==JOptionPane.YES_OPTION){
-                    registroJugadores();
-                    JOptionPane.showMessageDialog(null, "Se repartiran las cartas y se sorteará quien comienza",
-                            "Repartija", JOptionPane.INFORMATION_MESSAGE);
-                    GameController.iniciarJuego();
-                    cargarDatosJuego();
-                }else{
-                    panelPartida.setVisible(false);
-                    UIMenu.visible(true);
-                }
+
+                panelDeGanador.setVisible(true);
+                panelPartida.setVisible(false);
+                cargarLosDatosDelGanador();
             }else {
                 GameController.nuevaRonda();
                 //cartel de se sortearan los opnentes.
@@ -240,6 +281,38 @@ public class UIPartida extends JPanel{
         UIMenu.repintar();
     }
 
+    private void actualizarLaCarta(Jugador oponente) {
+        for (UICarta carta : listaDeCartasMazo){
+            if (carta.getPersonaje()==oponente.getPersonajeEnRonda()){
+                carta.setLabelVida(Integer.toString(carta.getJugador().getPersonajeEnRonda().getSalud()));
+            }
+        }
+    }
+
+    private void setearMuertaLaCarta(Jugador oponente) {
+        for (UICarta carta : listaDeCartasMazo){
+            if (carta.getJugador()==oponente){
+                if (carta.getPersonaje().isMuerto()){
+                    carta.setEliminado(true);
+                }
+            }
+        }
+    }
+
+    private void cargarLosDatosDelGanador() {
+        UICarta carta;
+        int ind2 = 1;
+        for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
+            carta = listaDeCartasMazo.get(i-1);
+            if (carta.getJugador()==GameController.getGanadorDePartida()){
+                carta.setBounds(100+(ind2*125),180,120,170);
+                panelDeGanador.add(carta);
+                ind2++;
+            }
+        }
+        labelGanador.setText(GameController.getGanadorDePartida().getNombre().toUpperCase(Locale.ROOT));
+    }
+
     private void repartirLasCartas() {
         listaDeCartasJ1 = new ArrayList<>(GameController.CANTIDADDEPERSONAJESPORJUGADOR);
         listaDeCartasJ2 = new ArrayList<>(GameController.CANTIDADDEPERSONAJESPORJUGADOR);
@@ -267,7 +340,7 @@ public class UIPartida extends JPanel{
             carta.setLayout(null);
             carta.setBounds(0,0,120,170);
             carta.crearImagenCarta();
-            panelPartida.add(carta);
+
         }
     }
 
@@ -301,6 +374,7 @@ public class UIPartida extends JPanel{
         barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
         labelVidaJugador2.setText(Integer.toString(jugador2.getPersonajeEnRonda().getSalud()));
 
+
         repartirLasCartas();
         posicionarCartasDeJugador();
 
@@ -324,6 +398,12 @@ public class UIPartida extends JPanel{
 
     }
 
+    private void reiniciarLasCartas() {
+        for (UICarta carta : listaDeCartasMazo){
+            carta.setEliminado(false);
+            carta.setLabelVida("100");
+        }
+    }
 
 
     private void ordenarLista(List<UICarta> listaAordenar, List<UICarta> lista) {
@@ -354,6 +434,7 @@ public class UIPartida extends JPanel{
 
         int i = 1;
         for (UICarta carta1 : listaDeCartasJ1){
+            panelPartida.add(carta1);
             carta1.setBounds(160 - (i*20), 185 - (i*20), 120, 170);
             Container parent = carta1.getParent();
             parent.setComponentZOrder(carta1,i);
@@ -361,6 +442,7 @@ public class UIPartida extends JPanel{
         }
         i = 1;
         for (UICarta carta2 : listaDeCartasJ2){
+            panelPartida.add(carta2);
             carta2.setBounds(520+(i*20),185-(i*20),120,170);
             Container parent = carta2.getParent();
             parent.setComponentZOrder(carta2,i);

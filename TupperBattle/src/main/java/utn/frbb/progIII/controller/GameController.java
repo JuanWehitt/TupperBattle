@@ -22,7 +22,7 @@ public class GameController {
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
     private static Partida partidaActual;
-    private static List<String> listaDeNombres = Arrays.asList("Santiago","Sebastián","Diego","Nicolás","Samuel","Alejandro","Daniel","Mateo","Ángel","Matías","Gabriel","Tomás","David","Emiliano","Andrés","Joaquín","Carlos","Alexander","Adrián","Lucas","Benjamín","Leonardo","Rodrigo","Felipe","Francisco","Pablo","Martín","Fernando","Isaac","Manuel","JuanPablo","Emmanuel","Emilio","Vicente","Eduardo","Juan","Javier","Jorge","Aaron","José","Erick","Luis","Cristian","Ignacio","Christopher","Jesús","Kevin","JuanJosé","Agustín","JuanDavid","Simón","Joshua","Maximiliano","MiguelÁngel","JuanSebastián","Bruno","Iván","Gael","Miguel","Thiago","Jerónimo","Hugo","Ricardo","Antonio","Ian","Anthony","Pedro","Rafael","Jonathan","Esteban","JuanManuel","Julián","Mauricio","Oscar","Santino","Axel","Sergio","Guillermo","Matthew","Valentín","Bautista","Álvaro","Dylan","Marcos","Kimberly","Luciano","Mario","César","Cristóbal","Luca","Iker","Juan","Andrés","Gonzalo","Roberto","Valentino","Facundo","Patricio","Diego","Alejandro","Josué","Franco");
+    private static final List<String> listaDeNombres = Arrays.asList("Santiago","Sebastián","Diego","Nicolás","Samuel","Alejandro","Daniel","Mateo","Ángel","Matías","Gabriel","Tomás","David","Emiliano","Andrés","Joaquín","Carlos","Alexander","Adrián","Lucas","Benjamín","Leonardo","Rodrigo","Felipe","Francisco","Pablo","Martín","Fernando","Isaac","Manuel","Juann","Emmanuel","Emilio","Vicente","Eduardo","Juan","Javier","Jorge","Aaron","José","Erick","Luis","Cristian","Ignacio","Christopher","Jesús","Kevin","Josee","Agustín","Daavid","Simón","Joshua","Maximil","MiguelÁn","JuanSeb","Bruno","Iván","Gael","Miguel","Thiago","Jerónimo","Hugo","Ricardo","Antonio","Iann","Anthony","Pedro","Rafael","Jonathan","Esteban","JuanMa","Julián","Mauricio","Oscar","Santino","Axel","Sergio","Guillermo","Matthew","Valentín","Bautista","Álvaro","Dylan","Marcos","Kimberly","Luciano","Mario","César","Cristóbal","Luca","Iker","Juan","Andrés","Gonzalo","Roberto","Valentino","Facundo","Patricio","Diego","Alejandro","Josué","Franco");
     private static List<String> listaNombresPersonajes = new ArrayList<>();
 
     private static List<Personaje> listaPersonajes = new ArrayList<>(CANTIDADDEPERSONAJESPORJUGADOR*2);
@@ -92,11 +92,9 @@ public class GameController {
     }
 
     private static String generarNombreAleatorio(){
-        String nombre = "ju";
         Random aleatorio = new Random(System.currentTimeMillis());
-        int intAleatorio;
-        intAleatorio = aleatorio.nextInt(99);
-        nombre = listaDeNombres.get(intAleatorio);
+        int intAleatorio = aleatorio.nextInt(99);
+        String nombre = listaDeNombres.get(intAleatorio);
         while (listaNombresPersonajes.contains(nombre)) {
             intAleatorio = aleatorio.nextInt(99);
             nombre = listaDeNombres.get(intAleatorio);
@@ -122,17 +120,17 @@ public class GameController {
                     1);
             nombreAleatorio = generarNombreAleatorio();
             if (randRaza<=10) {
-                listaPersonajes.add(new Humano(nombreAleatorio, nombreAleatorio.substring(0, 4), "10,10," + randAnio, 100));
+                listaPersonajes.add(new Humano(nombreAleatorio, nombreAleatorio.substring(0, 4), "10/10/" + randAnio, 100));
                 Humano humano = (Humano) listaPersonajes.get(listaPersonajes.size() - 1);
                 humano.setImagen(GameController.PATHIMAGENHUMANO);
                 GameController.agregarPersonaje(i, humano, caracteristicasPersonaje);
             }else if (randRaza<=20) {
-                listaPersonajes.add(new Orco(nombreAleatorio, nombreAleatorio.substring(0, 4), "10,10," + randAnio, 100));
+                listaPersonajes.add(new Orco(nombreAleatorio, nombreAleatorio.substring(0, 4), "10/10/" + randAnio, 100));
                 Orco orco = (Orco) listaPersonajes.get(listaPersonajes.size() - 1);
                 orco.setImagen(GameController.PATHIMAGENORCO);
                 GameController.agregarPersonaje(i, orco, caracteristicasPersonaje);
             }else {
-                listaPersonajes.add(new Elfo(nombreAleatorio, nombreAleatorio.substring(0, 4), "10,10," + randAnio, 100));
+                listaPersonajes.add(new Elfo(nombreAleatorio, nombreAleatorio.substring(0, 4), "10/10/" + randAnio, 100));
                 Elfo elfo = (Elfo) listaPersonajes.get(listaPersonajes.size() - 1);
                 elfo.setImagen(GameController.PATHIMAGENELFO);
                 GameController.agregarPersonaje(i, elfo, caracteristicasPersonaje);
@@ -232,6 +230,7 @@ public class GameController {
         jugador1.revivirPersonajes();
         jugador2.revivirPersonajes();
         Logger.logearRegistro("Finalizó la partida nro "+nroPartida+ ". Ganó "+partida.getJugadorGanador().getNombre());
+
     }
 
     public static boolean esFinDeRonda() {
@@ -273,7 +272,12 @@ public class GameController {
                 jugadorPerdedor = partida.getJugador1();
             }
         }
+        if (jugadorPerdedor.getPersonajeEnRonda().isMuerto()){
+            Logger.logearRegistro("El personaje "+jugadorPerdedor.getPersonajeEnRonda().getNombre()+" murió.");
+            Logger.logearRegistro("A "+jugadorPerdedor.getNombre()+" le quedan "+jugadorPerdedor.cantidadDePersonajesVivos()+" personajes vivos.");
+        }
         Logger.logearRegistro("Finalizó la ronda, ganó "+jugadorGanador.getNombre()+ " con "+jugadorGanador.getPersonajeEnRonda().getNombre());
+        Logger.logearRegistro(jugadorGanador.getNombre()+" ganó +"+GameController.VIDAEXTRAALGANAR+" de vida.");
         jugadorGanador.getPersonajeEnRonda().setSalud(jugadorGanador.getPersonajeEnRonda().getSalud()+VIDAEXTRAALGANAR);
         jugadorGanador.getPersonajeEnRonda().setAtaqueNro(1);
         jugadorPerdedor.getPersonajeEnRonda().setAtaqueNro(1);
@@ -334,7 +338,7 @@ public class GameController {
         caracteristicasPersonaje1.setVelocidad(caracteristicasPersonaje.getVelocidad());
         //System.out.println(listaPersonajes.size());
 
-        Logger.logearRegistro("Se creo el personaje: "+p.getNombre()+" el "+p.getNombreDeLaRaza().toLowerCase()+" "+p.getApodo()+", nacio el "+p.getFechaNac()+
+        Logger.logearRegistro("Se creó el personaje: "+p.getNombre()+" el "+p.getNombreDeLaRaza().toLowerCase()+" "+p.getApodo()+", nacio el "+p.getFechaNac()+
                 ". Con Velocidad: "+caracteristicasPersonaje.getVelocidad()+
                 ", Destreza: "+ caracteristicasPersonaje.getDestreza()+
                 ", Fuerza: "+caracteristicasPersonaje.getFuerza()+
@@ -356,7 +360,8 @@ public class GameController {
             }
             jugador.setPersonajeEnRonda(p);
             jugador.getPersonajeEnRonda().setEnRonda(true);
-            Logger.logearRegistro("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo());
+            Logger.logearRegistro("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo()+
+                    " para jugar la ronda");
             //System.out.println("Se sorteo del Jugador " + jugador.getNombre() + " el personaje " + p.getNombre() + " el " + p.getApodo());
             return p;
         }else{

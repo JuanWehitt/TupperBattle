@@ -111,12 +111,13 @@ public abstract class Personaje {
     }
 
     public void setSalud(int salud) {
-        this.salud = salud;
         if (salud <= 0){
             muerto = true;
+            salud = 0;
         }else{
             muerto = false;
         }
+        this.salud = salud;
     }
 
     public String getImagen() {

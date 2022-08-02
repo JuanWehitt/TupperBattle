@@ -15,6 +15,7 @@ public class Logger {
             FileWriter fw = new FileWriter(PATHLOGGER, true);
             BufferedWriter buffer = new BufferedWriter(fw);
             buffer.write(reg+"\r\n");
+            buffer.close();
             fw.close();
         }catch (IOException e){
             System.out.println(e.getMessage());

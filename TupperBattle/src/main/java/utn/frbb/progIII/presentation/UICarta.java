@@ -9,8 +9,11 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 public class UICarta extends JPanel {
 
@@ -20,8 +23,17 @@ public class UICarta extends JPanel {
     private boolean eliminado=false;
     private int numero;
     private JLabel imagenLabel;
+    private JLabel labelVida;
 
     public void UICarta(){
+    }
+
+    public JLabel getLabelVida() {
+        return labelVida;
+    }
+
+    public void setLabelVida(String labelVida) {
+        this.labelVida.setText(labelVida);
     }
 
     public Jugador getJugador() {
@@ -55,6 +67,11 @@ public class UICarta extends JPanel {
     public void setEliminado(boolean eliminado) {
         this.eliminado = eliminado;
         imagenLabel.setOpaque(eliminado);
+        if (eliminado) {
+            this.setBorder(BorderFactory.createLineBorder(new Color(136, 136, 136), 10, true));
+        }else{
+            this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+        }
     }
 
     public int getNumero() {
@@ -82,6 +99,21 @@ public class UICarta extends JPanel {
         //imagenLabel.setOpaque(true);
         this.setLayout(null);
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK,5,true));
+
+        JLabel labelNombre = new JLabel(this.getPersonaje().getNombre().toUpperCase(Locale.ROOT));
+        labelNombre.setBounds(6,this.getHeight()-21,this.getWidth()-12,15);
+        labelNombre.setHorizontalAlignment(SwingConstants.CENTER);
+        labelNombre.setFont(new Font("Arial", Font.BOLD, 12));
+        labelNombre.setOpaque(true);
+        labelNombre.setBackground(new Color(183, 227, 183,80));
+        this.add(labelNombre);
+        labelVida = new JLabel(Integer.toString(this.getPersonaje().getSalud()));
+        labelVida.setBounds(6,6,20,15);
+        labelVida.setHorizontalAlignment(SwingConstants.CENTER);
+        labelVida.setFont(new Font("Arial", Font.BOLD, 10));
+        labelVida.setOpaque(true);
+        labelVida.setBackground(new Color(183, 227, 183,80));
+        this.add(labelVida);
         this.add(imagenLabel);
     }
 
