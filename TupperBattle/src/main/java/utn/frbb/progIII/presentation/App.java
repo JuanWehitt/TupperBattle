@@ -4,6 +4,9 @@ import utn.frbb.progIII.Logger.Logger;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 
 /**
@@ -13,11 +16,8 @@ import java.io.IOException;
 public class App 
 {
     public static void main( String[] args ) throws IOException {
-        UIMenu uiMenu = new UIMenu();
-        Logger.logearRegistro("Inicio del Juego");
-        JFrame frame = uiMenu.crearVentana();
-        UIPartida partida = new UIPartida();
-        //UIVentana miventana = new UIVentana();
+        UIApp uiApp = new UIApp();
+        JFrame frame = uiApp.crearVentana();
         frame.repaint();
     }
 }

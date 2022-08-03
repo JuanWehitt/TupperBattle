@@ -15,7 +15,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -189,7 +188,7 @@ public class UIPartida extends JPanel{
                     panelPartida.setVisible(true);
                 }else{
                     panelPartida.setVisible(false);
-                    UIMenu.visible(true);
+                    UIApp.visible(true);
                 }
             }
         });
@@ -204,7 +203,7 @@ public class UIPartida extends JPanel{
         Jugador atacante = GameController.getJugadorDeTurno();
         Jugador oponente = GameController.getJugadorEnEspera();
         int leSaco = GameController.atacarAlOponente();
-        labelLog.setText("El "+atacante.getPersonajeEnRonda().getApodo() + " le sacó "+ leSaco + " de vida a el "+ oponente.getPersonajeEnRonda().getApodo());
+        labelLog.setText("El "+atacante.getPersonajeEnRonda().getApodo() + " le sacó "+ leSaco + " de vida a "+ oponente.getPersonajeEnRonda().getApodo());
 
         barraJugador1.setValue(jugador1.getPersonajeEnRonda().getSalud());
         barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
@@ -212,6 +211,7 @@ public class UIPartida extends JPanel{
         GameController.actualizarNumeroDeAtaques();
 
         if (GameController.esFinDeRonda()){
+
             GameController.finalizarRonda();
             Personaje pGanador,pPerdedor;
             Jugador jGanador,jPerdedor;
@@ -223,27 +223,28 @@ public class UIPartida extends JPanel{
 
 
             JOptionPane.showMessageDialog(null,
-                    "Ganó "+jGanador.getNombre()+ " con "+pGanador.getNombre(),
+                    "Ganó "+jGanador.getNombre()+ " con "+pGanador.getNombre()+" y tiene +"+GameController.VIDAEXTRAALGANAR+" de vida.",
                     "Fin de la ronda", JOptionPane.INFORMATION_MESSAGE);
+            actualizarLaCarta(jGanador);
             if (oponente.getPersonajeEnRonda().isMuerto()){
+                setearMuertaLaCarta(jPerdedor);
                 JOptionPane.showMessageDialog(null,
-                        oponente.getNombre()+ "... tu personaje el "+oponente.getPersonajeEnRonda().getApodo()+" murio.",
+                        oponente.getNombre()+ "... tu personaje "+oponente.getPersonajeEnRonda().getApodo()+" murio.",
                         "Se murio", JOptionPane.INFORMATION_MESSAGE);
-                setearMuertaLaCarta(oponente);
-                actualizarLaCarta(atacante);
             }
-            labelLog.setText(jGanador.getNombre()+" gano con el personaje "+pGanador.getNombre()+" y gano "+GameController.VIDAEXTRAALGANAR +" de vida");
+            labelLog.setText(jGanador.getNombre()+" Ganó con el personaje "+pGanador.getNombre()+" y ganó "+GameController.VIDAEXTRAALGANAR +" de vida");
             if (GameController.esFinDeLaPartida()) {
-                GameController.finalizarPartida();
+                GameController.setJugadorGanador(jGanador);
                 //preguntar si se quiere comenzar de nuevo otra partida. con las vidas en 100 y los mismos personajes creados.
                 JOptionPane.showMessageDialog(null,
                         "GANASTE "+jGanador.getNombre().toUpperCase()+"!!!!",
                         "Fin de la Partida", JOptionPane.INFORMATION_MESSAGE);
-                labelLog.setText("GANO "+GameController.getGanadorDePartida().getNombre().toUpperCase()+ " !!!");
+                labelLog.setText("GANO "+jGanador.getNombre().toUpperCase()+ " !!!");
 
                 panelDeGanador.setVisible(true);
                 panelPartida.setVisible(false);
                 cargarLosDatosDelGanador();
+                GameController.finalizarPartida();
             }else {
                 GameController.nuevaRonda();
                 //cartel de se sortearan los opnentes.
@@ -278,7 +279,7 @@ public class UIPartida extends JPanel{
                 botonAtacar.setText("Atacarr!! >>>");
             }
         }
-        UIMenu.repintar();
+        UIApp.repintar();
     }
 
     private void actualizarLaCarta(Jugador oponente) {
@@ -300,6 +301,24 @@ public class UIPartida extends JPanel{
     }
 
     private void cargarLosDatosDelGanador() {
+        List<UICarta> lista;
+        if(GameController.getGanadorDePartida()==jugador1){
+            lista = listaDeCartasJ1;
+        }else{
+            lista = listaDeCartasJ2;
+        }
+        System.out.println("lista es:"+lista.toString());
+        //TODO CORREGIR: Cuando termina la partida desde Nuevo Juego, y se inicia otra con CrearPersonajes. La pantralla de ganador no muestra bien los datos del ganador.
+        //Solo pasa en ese caso.
+        //no pasa cuando se hace nuevo juego y se elije jugar de nuevo.
+
+        int ind2 = 1;
+        for (UICarta carta : lista){
+            carta.setBounds(100+(ind2*125),180,120,170);
+            panelDeGanador.add(carta);
+            ind2++;
+        }
+        /*
         UICarta carta;
         int ind2 = 1;
         for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
@@ -309,7 +328,7 @@ public class UIPartida extends JPanel{
                 panelDeGanador.add(carta);
                 ind2++;
             }
-        }
+        }*/
         labelGanador.setText(GameController.getGanadorDePartida().getNombre().toUpperCase(Locale.ROOT));
     }
 
@@ -348,12 +367,12 @@ public class UIPartida extends JPanel{
         String nombre1 = JOptionPane.showInputDialog(null, "Ingresa tu nombre!",
                 "Jugadores", JOptionPane.QUESTION_MESSAGE);
         if( nombre1==null ){
-            UIMenu.windowGeneratingCharacter.setVisible(true);
+            UIApp.uiGeneratingCharacter.setVisible(true);
         }else {
             String nombre2 = JOptionPane.showInputDialog(null, "Ingresa el nombre de tu oponente!",
                     "Jugadores", JOptionPane.QUESTION_MESSAGE);
             if ( nombre2 == null){
-                UIMenu.windowGeneratingCharacter.setVisible(true);
+                UIApp.uiGeneratingCharacter.setVisible(true);
             } else {
                 GameController.crearPartida(nombre1,nombre2);
             }
@@ -365,12 +384,12 @@ public class UIPartida extends JPanel{
         //trae del game controler los datos como nombres de jugadores, inicia las vidas..
         jugador1 = GameController.getJugador(1,GameController.getNroPartida());
 
-        labelJugador1.setText(jugador1.getNombre() + " con el "+jugador1.getPersonajeEnRonda().getApodo());
+        labelJugador1.setText(jugador1.getNombre() + " con "+jugador1.getPersonajeEnRonda().getApodo());
         barraJugador1.setValue(jugador1.getPersonajeEnRonda().getSalud());
         labelVidaJugador1.setText(Integer.toString(jugador1.getPersonajeEnRonda().getSalud()));
 
         jugador2 = GameController.getJugador(2,GameController.getNroPartida());
-        labelJugador2.setText(jugador2.getNombre() + " con el "+jugador2.getPersonajeEnRonda().getApodo());
+        labelJugador2.setText(jugador2.getNombre() + " con "+jugador2.getPersonajeEnRonda().getApodo());
         barraJugador2.setValue(jugador2.getPersonajeEnRonda().getSalud());
         labelVidaJugador2.setText(Integer.toString(jugador2.getPersonajeEnRonda().getSalud()));
 

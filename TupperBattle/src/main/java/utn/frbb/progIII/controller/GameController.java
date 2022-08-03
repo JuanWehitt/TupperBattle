@@ -3,6 +3,10 @@ package utn.frbb.progIII.controller;
 import utn.frbb.progIII.Logger.Logger;
 import utn.frbb.progIII.model.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -230,6 +234,7 @@ public class GameController {
         jugador1.revivirPersonajes();
         jugador2.revivirPersonajes();
         Logger.logearRegistro("Finalizó la partida nro "+nroPartida+ ". Ganó "+partida.getJugadorGanador().getNombre());
+        Logger.logearRegistro("------------------------------");
 
     }
 
@@ -293,6 +298,10 @@ public class GameController {
     public static void setNroAtaques(int i) {
         partidaActual.getJugador1().getPersonajeEnRonda().setAtaqueNro(1);
         partidaActual.getJugador2().getPersonajeEnRonda().setAtaqueNro(1);
+    }
+
+    public static void setJugadorGanador(Jugador jGanador) {
+        partidaActual.setJugadorGanador(jGanador);
     }
 
     public void terminarJuego(){
@@ -381,6 +390,8 @@ public class GameController {
             return listaDePartidas.get(nroPartida-1).getJugador2();
         }
     }
+
+
 
 
 }

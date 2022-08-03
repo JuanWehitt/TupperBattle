@@ -11,9 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
-import static utn.frbb.progIII.presentation.UIMenu.ANCHOBOTON;
+import static utn.frbb.progIII.presentation.UIApp.ANCHOBOTON;
 
 public class UIGeneratingCharacter extends JPanel {
 
@@ -305,13 +304,13 @@ public class UIGeneratingCharacter extends JPanel {
                     }
 
                     panelGeneratingCharacter.setVisible(false);
-                    UIMenu.windowPartida.registroJugadores();
+                    UIApp.uiPartida.registroJugadores();
                     JOptionPane.showMessageDialog(null, "Se repartiran las cartas y se sorteará quien comienza",
                             "Repartija", JOptionPane.INFORMATION_MESSAGE);
                     GameController.iniciarJuego();
-                    UIMenu.windowPartida.crearMazoDeCartas();
-                    UIMenu.windowPartida.cargarDatosJuego();
-                    UIMenu.windowPartida.setVisible(true);
+                    UIApp.uiPartida.crearMazoDeCartas();
+                    UIApp.uiPartida.cargarDatosJuego();
+                    UIApp.uiPartida.setVisible(true);
                 }
             }
         });
@@ -326,7 +325,7 @@ public class UIGeneratingCharacter extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 limpiarComponentes();
                 panelGeneratingCharacter.setVisible(false);
-                UIMenu.visible(true);
+                UIApp.visible(true);
             }
         });
         frame.add(panelGeneratingCharacter);

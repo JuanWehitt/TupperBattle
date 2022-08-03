@@ -117,7 +117,11 @@ public abstract class Personaje {
         }else{
             muerto = false;
         }
-        this.salud = salud;
+        if (salud>100){
+            this.salud = 100;
+        }else{
+            this.salud = salud;
+        }
     }
 
     public String getImagen() {
