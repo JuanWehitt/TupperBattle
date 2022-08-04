@@ -34,6 +34,7 @@ public class UIApp extends javax.swing.JFrame{
         uiGeneratingCharacter.crearPanel(frame);
         uiPartida = new UIPartida();
         uiPartida.crearPanel(frame);
+        //uiPartida.repaint();
         uiLog = new UILog();
         uiLog.crearPanel(frame);
     }
@@ -117,6 +118,18 @@ public class UIApp extends javax.swing.JFrame{
         });
         panelMenu.add(buttonVerLog);
         //
+        JButton buttonSalir = new JButton("Salir");
+        buttonSalir.setBounds(panelMenu.getWidth()/2-ANCHOBOTON/2,140,ANCHOBOTON,30);
+        buttonSalir.setBackground(Color.WHITE);
+        buttonSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+        panelMenu.add(buttonSalir);
+
         frame.getContentPane().add(panelMenu);
         //frame.add(buttonNuevoJuego);
         frame.add(panelLogo);

@@ -27,6 +27,16 @@ public class UICaracteristicas extends JPanel{
         labelFuerza = new JLabel("0",SwingConstants.CENTER);
         labelArmadura = new JLabel("0",SwingConstants.CENTER);
         labelNivel = new JLabel("0",SwingConstants.CENTER);
+        labelVelocidad.setBackground(Color.WHITE);
+        labelDestreza.setBackground(Color.WHITE);
+        labelFuerza.setBackground(Color.WHITE);
+        labelArmadura.setBackground(Color.WHITE);
+        labelNivel.setBackground(Color.WHITE);
+        labelVelocidad.setOpaque(true);
+        labelDestreza.setOpaque(true);
+        labelFuerza.setOpaque(true);
+        labelArmadura.setOpaque(true);
+        labelNivel.setOpaque(true);
         Border line = BorderFactory.createLineBorder(Color.BLUE, 1);
         //Border titled = BorderFactory.createTitledBorder(null, "Velocidad", TitledBorder.CENTER, TitledBorder.TOP, null, Color.BLUE);
         labelVelocidad.setBorder(BorderFactory.createTitledBorder(line, "Velocidad", TitledBorder.CENTER, TitledBorder.TOP, null, Color.BLUE));

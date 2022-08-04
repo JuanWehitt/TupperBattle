@@ -50,7 +50,7 @@ public class UILog extends JPanel {
         });
         add(botonCancelar);
         botonEliminarLog = new JButton("Eliminar archivo log");
-        botonEliminarLog.setBounds(250, 355, 200,30);
+        botonEliminarLog.setBounds(250, 355, 200,35);
         botonEliminarLog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -68,7 +68,8 @@ public class UILog extends JPanel {
 
     public void cargarArchivoLog() {
         String contenido = LogController.getArchivo();
-        if (contenido==null){
+        if (contenido==""){
+            textPane.setText("No hay archivo");
             JOptionPane.showMessageDialog(null, "No existe el archivo, comienze un nuevo juego.",
                     "Archivo log", JOptionPane.INFORMATION_MESSAGE);
             this.setVisible(false);

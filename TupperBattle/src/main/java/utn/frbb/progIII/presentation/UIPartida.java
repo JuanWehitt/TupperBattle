@@ -6,6 +6,7 @@ import utn.frbb.progIII.model.Jugador;
 import utn.frbb.progIII.model.Personaje;
 
 import java.awt.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
@@ -14,6 +15,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -21,42 +25,62 @@ import java.util.Locale;
 public class UIPartida extends JPanel{
 
 
-    private Jugador jugador1;
-    private Jugador jugador2;
+    private static Jugador jugador1;
+    private static Jugador jugador2;
 
-    private JProgressBar barraJugador1;
-    private JProgressBar barraJugador2;
-    private JLabel labelJugador1;
-    private JLabel labelJugador2;
-    private JLabel labelVidaJugador1;
-    private JLabel labelVidaJugador2;
-    private List<UICarta> listaDeCartasMazo;
-    private List<UICarta> listaDeCartasJ1;
-    private List<UICarta> listaDeCartasJ2;
-    private UICaracteristicas caracteristicasIzq, caracteristicasDer;
-    private JButton botonAtacar;
-    private JPanel panelPartida;
-    private JLabel labelLog;
-    private JLabel labelRonda;
-    private JLabel labelNroDeAtaqueJugador1, labelNroDeAtaqueJugador2;
+    private static JProgressBar barraJugador1;
+    private static JProgressBar barraJugador2;
+    private static JLabel labelJugador1;
+    private static JLabel labelJugador2;
+    private static JLabel labelVidaJugador1;
+    private static JLabel labelVidaJugador2;
+    private static List<UICarta> listaDeCartasMazo;
+    private static List<UICarta> listaDeCartasJ1;
+    private static List<UICarta> listaDeCartasJ2;
+    private static UICaracteristicas caracteristicasIzq;
+    private static UICaracteristicas caracteristicasDer;
+    private static JButton botonAtacar;
+    private static JPanel panelPartida;
+    private static JLabel labelLog;
+    private static JLabel labelRonda;
+    private static JLabel labelNroDeAtaqueJugador1;
+    private static JLabel labelNroDeAtaqueJugador2;
     private JPanel panelDeGanador;
     private JLabel labelGanador;
+    private JLabel imagenLabel;
+    private Image image;
+    private Image image2;
+    private JLabel imagenLabel2;
 
     public void setVisible(boolean val){
         panelPartida.setVisible(val);
     }
 
     public void UIPartida(){
+        this.setLayout(null);
+        this.setBounds(UIApp.frame.getWidth()/2-800/2,100,800,500);
     }
 
-    public void crearPanel(JFrame frame){
 
+    public void crearPanel(JFrame frame){
         panelPartida = new JPanel();
         panelPartida.setLayout(null);
-//
         panelPartida.setBounds(frame.getWidth()/2-800/2,100,800,500);
-        panelPartida.setBackground(new Color(183, 227, 183));
+        //panelPartida.setBackground(new Color(183, 227, 183));
         panelPartida.setVisible(false);
+
+        File file = new File(GameController.PATHIMAGENFONDOBATALLA);
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        image = bufferedImage.getScaledInstance(panelPartida.getWidth(), panelPartida.getHeight(), Image.SCALE_DEFAULT);
+        ImageIcon imageIcon = new ImageIcon(image);
+        imagenLabel = new JLabel(imageIcon);//240 x
+        imagenLabel.setBounds(0,0,panelPartida.getWidth(),panelPartida.getHeight());
+
 
         labelJugador1 = new JLabel("Jugador 1");
         labelJugador1.setBounds(40,20,200,20);
@@ -110,7 +134,8 @@ public class UIPartida extends JPanel{
         panelPartida.add(botonAtacar);
         panelPartida.setComponentZOrder(botonAtacar,4);
         labelLog = new JLabel("",SwingConstants.CENTER);
-        labelLog.setBackground(new Color(0,0,0,0));
+        labelLog.setOpaque(true);
+        labelLog.setBackground(new Color(19, 126, 0, 255));
         labelLog.setBounds(0,470,800,30);
 
         labelLog.setText("HOLA");
@@ -126,15 +151,17 @@ public class UIPartida extends JPanel{
         panelPartida.add(labelRonda);
 
         labelNroDeAtaqueJugador1 = new JLabel("1 de 7",SwingConstants.CENTER);
-        labelNroDeAtaqueJugador1.setBackground(new Color(0,0,0,0));
+        labelNroDeAtaqueJugador1.setOpaque(true);
+        labelNroDeAtaqueJugador1.setBackground(new Color(110, 133, 201));
         labelNroDeAtaqueJugador1.setBounds(180,350,80,30);
-        labelNroDeAtaqueJugador1.setBorder(BorderFactory.createTitledBorder(line, "ATAQUE", TitledBorder.CENTER, TitledBorder.TOP, null, Color.BLUE));
+        labelNroDeAtaqueJugador1.setBorder(BorderFactory.createTitledBorder(line, "ATAQUE", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
         panelPartida.add(labelNroDeAtaqueJugador1);
 
         labelNroDeAtaqueJugador2 = new JLabel("1 de 7",SwingConstants.CENTER);
-        labelNroDeAtaqueJugador2.setBackground(new Color(0,0,0,0));
+        labelNroDeAtaqueJugador2.setOpaque(true);
+        labelNroDeAtaqueJugador2.setBackground(new Color(110, 133, 201));
         labelNroDeAtaqueJugador2.setBounds(570,350,80,30);
-        labelNroDeAtaqueJugador2.setBorder(BorderFactory.createTitledBorder(line, "ATAQUE", TitledBorder.CENTER, TitledBorder.TOP, null, Color.BLUE));
+        labelNroDeAtaqueJugador2.setBorder(BorderFactory.createTitledBorder(line, "ATAQUE", TitledBorder.CENTER, TitledBorder.TOP, null, Color.WHITE));
         panelPartida.add(labelNroDeAtaqueJugador2);
 
         caracteristicasDer = new UICaracteristicas();
@@ -150,21 +177,24 @@ public class UIPartida extends JPanel{
         panelPartida.add(caracteristicasDer);
         panelPartida.add(caracteristicasIzq);
         //imprimirCartas(panelPartida);
+        panelPartida.add(imagenLabel);
         frame.add(panelPartida);
 
         panelDeGanador = new JPanel();
         panelDeGanador.setLayout(null);
         panelDeGanador.setBounds(frame.getWidth()/2-800/2,100,800,500);
-        panelDeGanador.setBackground(new Color(47, 231, 10));
-        panelDeGanador.setVisible(false);
 
         JLabel labelTituloGanador = new JLabel("EL GANADOR DEL TRONO DE HIERRO ES");
         labelTituloGanador.setBounds(165,3,600,48);
         labelTituloGanador.setFont(new Font("Arial", Font.BOLD, 25));
+        //labelTituloGanador.setOpaque(true);
+        //labelTituloGanador.setBackground(new Color(100,100,100));
         panelDeGanador.add(labelTituloGanador);
 
         labelGanador = new JLabel("EL GANADOR");
         labelGanador.setBounds(0,80,800,70);
+        //labelGanador.setOpaque(false);
+        //labelGanador.setBackground(new Color(143, 157, 199, 255));
         labelGanador.setFont(new Font("Arial", Font.BOLD, 50));
         labelGanador.setHorizontalAlignment(SwingConstants.CENTER);
         panelDeGanador.add(labelGanador);
@@ -174,17 +204,17 @@ public class UIPartida extends JPanel{
         botonAceptarGanadorDePartida.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int respuest = JOptionPane.showConfirmDialog(panelPartida,
+                int respuest = JOptionPane.showConfirmDialog(botonAceptarGanadorDePartida.getParent(),
                         "Jugamos otra? Se repartiran los personajes de nuevo.",
                         "Juguemos", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 panelDeGanador.setVisible(false);
-                reiniciarLasCartas();
+                UIPartida.reiniciarLasCartas();
                 if (respuest==JOptionPane.YES_OPTION){
-                    registroJugadores();
+                    UIPartida.registroJugadores();
                     JOptionPane.showMessageDialog(null, "Se repartiran las cartas y se sorteará quien comienza",
                             "Repartija", JOptionPane.INFORMATION_MESSAGE);
                     GameController.iniciarJuego();
-                    cargarDatosJuego();
+                    UIPartida.cargarDatosJuego();
                     panelPartida.setVisible(true);
                 }else{
                     panelPartida.setVisible(false);
@@ -192,10 +222,13 @@ public class UIPartida extends JPanel{
                 }
             }
         });
+
         panelDeGanador.add(botonAceptarGanadorDePartida);
+        panelDeGanador.setVisible(false);
+        //panelDeGanador.crearPanel(frame);
         frame.add(panelDeGanador);
         //frame.setComponentZOrder(panelDeGanador,10);
-
+        //frame.repaint();
 
     }
 
@@ -232,7 +265,7 @@ public class UIPartida extends JPanel{
                         oponente.getNombre()+ "... tu personaje "+oponente.getPersonajeEnRonda().getApodo()+" murio.",
                         "Se murio", JOptionPane.INFORMATION_MESSAGE);
             }
-            labelLog.setText(jGanador.getNombre()+" Ganó con el personaje "+pGanador.getNombre()+" y ganó "+GameController.VIDAEXTRAALGANAR +" de vida");
+            labelLog.setText(jGanador.getNombre()+" ganó con el personaje "+pGanador.getNombre()+" y ganó "+GameController.VIDAEXTRAALGANAR +" de vida");
             if (GameController.esFinDeLaPartida()) {
                 GameController.setJugadorGanador(jGanador);
                 //preguntar si se quiere comenzar de nuevo otra partida. con las vidas en 100 y los mismos personajes creados.
@@ -243,6 +276,7 @@ public class UIPartida extends JPanel{
 
                 panelDeGanador.setVisible(true);
                 panelPartida.setVisible(false);
+
                 cargarLosDatosDelGanador();
                 GameController.finalizarPartida();
             }else {
@@ -307,32 +341,22 @@ public class UIPartida extends JPanel{
         }else{
             lista = listaDeCartasJ2;
         }
-        System.out.println("lista es:"+lista.toString());
-        //TODO CORREGIR: Cuando termina la partida desde Nuevo Juego, y se inicia otra con CrearPersonajes. La pantralla de ganador no muestra bien los datos del ganador.
-        //Solo pasa en ese caso.
-        //no pasa cuando se hace nuevo juego y se elije jugar de nuevo.
-
+        for (Component c : panelDeGanador.getComponents()){
+            if (c instanceof UICarta){
+                panelDeGanador.remove(c);
+            }
+        }
         int ind2 = 1;
         for (UICarta carta : lista){
             carta.setBounds(100+(ind2*125),180,120,170);
             panelDeGanador.add(carta);
             ind2++;
         }
-        /*
-        UICarta carta;
-        int ind2 = 1;
-        for (int i=1; i<=GameController.CANTIDADDEPERSONAJESPORJUGADOR*2; i++){
-            carta = listaDeCartasMazo.get(i-1);
-            if (carta.getJugador()==GameController.getGanadorDePartida()){
-                carta.setBounds(100+(ind2*125),180,120,170);
-                panelDeGanador.add(carta);
-                ind2++;
-            }
-        }*/
+
         labelGanador.setText(GameController.getGanadorDePartida().getNombre().toUpperCase(Locale.ROOT));
     }
 
-    private void repartirLasCartas() {
+    private static void repartirLasCartas() {
         listaDeCartasJ1 = new ArrayList<>(GameController.CANTIDADDEPERSONAJESPORJUGADOR);
         listaDeCartasJ2 = new ArrayList<>(GameController.CANTIDADDEPERSONAJESPORJUGADOR);
         for (UICarta carta : listaDeCartasMazo) {
@@ -363,7 +387,7 @@ public class UIPartida extends JPanel{
         }
     }
 
-    public void registroJugadores(){
+    public static void registroJugadores(){
         String nombre1 = JOptionPane.showInputDialog(null, "Ingresa tu nombre!",
                 "Jugadores", JOptionPane.QUESTION_MESSAGE);
         if( nombre1==null ){
@@ -379,7 +403,7 @@ public class UIPartida extends JPanel{
         }
     }
 
-    public void cargarDatosJuego(){
+    public static void cargarDatosJuego(){
 
         //trae del game controler los datos como nombres de jugadores, inicia las vidas..
         jugador1 = GameController.getJugador(1,GameController.getNroPartida());
@@ -417,7 +441,7 @@ public class UIPartida extends JPanel{
 
     }
 
-    private void reiniciarLasCartas() {
+    public static void reiniciarLasCartas() {
         for (UICarta carta : listaDeCartasMazo){
             carta.setEliminado(false);
             carta.setLabelVida("100");
@@ -425,7 +449,7 @@ public class UIPartida extends JPanel{
     }
 
 
-    private void ordenarLista(List<UICarta> listaAordenar, List<UICarta> lista) {
+    private static void ordenarLista(List<UICarta> listaAordenar, List<UICarta> lista) {
         for (UICarta cartaa : listaAordenar) {
             if (cartaa.getPersonaje() == cartaa.getJugador().getPersonajeEnRonda()) {
                 lista.add(cartaa);
@@ -443,7 +467,7 @@ public class UIPartida extends JPanel{
         }
     }
 
-    private void posicionarCartasDeJugador() {
+    private static void posicionarCartasDeJugador() {
         List<UICarta> listaOrdenadaj1 = new ArrayList<>();
         List<UICarta> listaOrdenadaj2 = new ArrayList<>();
         ordenarLista(listaDeCartasJ1,listaOrdenadaj1);

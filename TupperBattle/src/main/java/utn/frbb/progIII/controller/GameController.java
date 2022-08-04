@@ -23,6 +23,8 @@ public class GameController {
     public static final String PATHIMAGENHUMANO = "TupperBattle/images/humano.jpg";
     public static final String PATHIMAGENORCO = "TupperBattle/images/orco.jpg";
     public static final String PATHIMAGENELFO = "TupperBattle/images/elfo.jpg";
+    public static final String PATHIMAGENFONDOBATALLA = "TupperBattle/images/fondoBatalla.jpg";
+    public static final String PATHIMAGENFONDOGANADOR = "TupperBattle/images/trono.jpg";
     private static int nroPartida = 0;
     private static List<Partida> listaDePartidas = new ArrayList<>();
     private static Partida partidaActual;
@@ -231,11 +233,16 @@ public class GameController {
         }else{
             partida.setJugadorGanador(jugador1);
         }
+
+        Logger.logearRegistro("Finalizó la partida nro "+nroPartida+ ". Ganó "+partida.getJugadorGanador().getNombre());
+        String log="A " + partida.getJugadorGanador().getNombre() + " le quedaron los personajes: ";
+        for (int i = 0; i < CANTIDADDEPERSONAJESPORJUGADOR; i++) {
+            log = log.concat(partida.getJugadorGanador().getPersonaje(i).getNombre() + " con " + partida.getJugadorGanador().getPersonaje(i).getSalud()+". ");
+        }
+        Logger.logearRegistro(log);
+        Logger.logearRegistro("------------------------------");
         jugador1.revivirPersonajes();
         jugador2.revivirPersonajes();
-        Logger.logearRegistro("Finalizó la partida nro "+nroPartida+ ". Ganó "+partida.getJugadorGanador().getNombre());
-        Logger.logearRegistro("------------------------------");
-
     }
 
     public static boolean esFinDeRonda() {
@@ -282,7 +289,7 @@ public class GameController {
             Logger.logearRegistro("A "+jugadorPerdedor.getNombre()+" le quedan "+jugadorPerdedor.cantidadDePersonajesVivos()+" personajes vivos.");
         }
         Logger.logearRegistro("Finalizó la ronda, ganó "+jugadorGanador.getNombre()+ " con "+jugadorGanador.getPersonajeEnRonda().getNombre());
-        Logger.logearRegistro(jugadorGanador.getNombre()+" ganó +"+GameController.VIDAEXTRAALGANAR+" de vida.");
+        Logger.logearRegistro(jugadorGanador.getPersonajeEnRonda().getNombre()+" ganó +"+GameController.VIDAEXTRAALGANAR+" de vida.");
         jugadorGanador.getPersonajeEnRonda().setSalud(jugadorGanador.getPersonajeEnRonda().getSalud()+VIDAEXTRAALGANAR);
         jugadorGanador.getPersonajeEnRonda().setAtaqueNro(1);
         jugadorPerdedor.getPersonajeEnRonda().setAtaqueNro(1);
